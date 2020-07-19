@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 
-	"GitHub.com/cbt4all/netaut/fwcom"
 	"github.com/cbt4all/mytoolkits"
 )
 
@@ -231,7 +230,7 @@ func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 }
 
 // WriteFwRuleCSV ...
-func WriteFwRuleCSV(fpath string, fwr []fwcom.FwRule) error {
+func WriteFwRuleCSV(fpath string, fwr []FwRule) error {
 
 	// Order of the file:
 	// Sources	Destinations	Protocol	Ports	Applications	Needed
