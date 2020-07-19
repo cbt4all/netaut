@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"GitHub.com/cbt4all/netaut/fwcom"
 	"github.com/cbt4all/mytoolkits"
 )
 
@@ -212,6 +213,51 @@ func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 			fw.DstZone,
 			strconv.FormatBool(fw.Needed),
 			strconv.Itoa(fw.FwRuleIdx),
+		}); err != nil {
+			outerr = err
+			return outerr
+		}
+	}
+
+	// Write any buffered data to the underlying writer (standard output).
+	w.Flush()
+
+	if err := w.Error(); err != nil {
+		outerr = err
+		return outerr
+	}
+
+	return outerr
+}
+
+// WriteFwRuleCSV ...
+func WriteFwRuleCSV(fpath string, fwr []fwcom.FwRule) error {
+
+	// Order of the file:
+	// Sources	Destinations	Protocol	Ports	Applications	Needed
+
+	// Creating outerr as Output Error.
+	outerr := errors.New("nil")
+	outerr = nil
+
+	// Open CSV file
+	f, err := os.OpenFile(fpath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
+	if err != nil {
+		outerr = err
+		return outerr
+	}
+	defer f.Close()
+
+	w := csv.NewWriter(f)
+
+	for _, fw := range fwr {
+		if err := w.Write([]string{
+			strings.Join(fw.SrcIPs, " "),
+			strings.Join(fw.DstIPs, " "),
+			strings.Join(fw.Protocol, "\\"),
+			strings.Join(fw.Ports, "\\"),
+			"",
+			strconv.FormatBool(fw.Needed),
 		}); err != nil {
 			outerr = err
 			return outerr
