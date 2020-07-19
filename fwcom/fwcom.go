@@ -151,6 +151,14 @@ func ConvertSimpleToFwRule(fws []FwRuleSimple) []FwRule {
 		fwr[i].Ports = tp
 		fwr[i].Protocol = tprot
 		fwr[i].Needed = needed
+
+		sip = nil
+		dip = nil
+		sz = nil
+		dz = nil
+		p = nil
+		prot = nil
+		needed = false
 	}
 	return fwr
 }
