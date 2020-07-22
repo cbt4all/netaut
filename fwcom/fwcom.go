@@ -102,7 +102,7 @@ func ConvertFwRuleToSimple(fwr []FwRule) []FwRuleSimple {
 							DstZone:   "",
 							DstInt:    "",
 							Protocol:  fwr[a].Protocol[d],
-							Ports:     fwr[a].Ports[e],
+							Port:      fwr[a].Ports[e],
 						})
 					}
 				}
@@ -129,7 +129,7 @@ func ConvertSimpleToFwRule(fws []FwRuleSimple) []FwRule {
 				dip = append(dip, fwsitem.DstIP)
 				sz = append(sz, fwsitem.SrcZone)
 				dz = append(dz, fwsitem.DstZone)
-				p = append(p, fwsitem.Ports)
+				p = append(p, fwsitem.Port)
 				prot = append(prot, fwsitem.Protocol)
 				needed = needed || fwsitem.Needed
 			}
@@ -198,7 +198,7 @@ func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 			fw.SrcIP,
 			fw.DstIP,
 			fw.Protocol,
-			fw.Ports,
+			fw.Port,
 			"",
 			fw.SrcInt,
 			fw.DstInt,
