@@ -95,10 +95,10 @@ func ConvertFwRuleToSimple(fwr []FwRule) []FwRuleSimple {
 					for e := 0; e < len(fwr[a].Ports); e++ {
 						fws = append(fws, FwRuleSimple{
 							FwRuleIdx: a,
-							SrcIPs:    fwr[a].SrcIPs[b],
+							SrcIP:     fwr[a].SrcIPs[b],
 							SrcZone:   "",
 							SrcInt:    "",
-							DstIPs:    fwr[a].DstIPs[c],
+							DstIP:     fwr[a].DstIPs[c],
 							DstZone:   "",
 							DstInt:    "",
 							Protocol:  fwr[a].Protocol[d],
@@ -125,8 +125,8 @@ func ConvertSimpleToFwRule(fws []FwRuleSimple) []FwRule {
 	for i := 0; i < fwrl; i++ {
 		for _, fwsitem := range fws {
 			if i == fwsitem.FwRuleIdx {
-				sip = append(sip, fwsitem.SrcIPs)
-				dip = append(dip, fwsitem.DstIPs)
+				sip = append(sip, fwsitem.SrcIP)
+				dip = append(dip, fwsitem.DstIP)
 				sz = append(sz, fwsitem.SrcZone)
 				dz = append(dz, fwsitem.DstZone)
 				p = append(p, fwsitem.Ports)
@@ -137,15 +137,11 @@ func ConvertSimpleToFwRule(fws []FwRuleSimple) []FwRule {
 		// Remove duplicate
 		tsip := mytoolkits.RemoveDuplicatesFromSliceString(sip)
 		tdip := mytoolkits.RemoveDuplicatesFromSliceString(dip)
-		tsz := mytoolkits.RemoveDuplicatesFromSliceString(sz)
-		tdz := mytoolkits.RemoveDuplicatesFromSliceString(dz)
 		tp := mytoolkits.RemoveDuplicatesFromSliceString(p)
 		tprot := mytoolkits.RemoveDuplicatesFromSliceString(prot)
 
 		fwr[i].SrcIPs = tsip
 		fwr[i].DstIPs = tdip
-		fwr[i].SrcZone = tsz
-		fwr[i].DstZone = tdz
 		fwr[i].Ports = tp
 		fwr[i].Protocol = tprot
 		fwr[i].Needed = needed
@@ -199,8 +195,8 @@ func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 
 	for _, fw := range fws {
 		if err := w.Write([]string{
-			fw.SrcIPs,
-			fw.DstIPs,
+			fw.SrcIP,
+			fw.DstIP,
 			fw.Protocol,
 			fw.Ports,
 			"",
