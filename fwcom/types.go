@@ -3,9 +3,7 @@ package fwcom
 // FwRule ...
 type FwRule struct {
 	SrcIPs   []string
-	SrcZone  []string
 	DstIPs   []string
-	DstZone  []string
 	Protocol []string
 	Ports    []string
 	Needed   bool
@@ -16,11 +14,11 @@ type FwRuleSimple struct {
 
 	// If the Type FwRule is used, FwRuleIdx is the index of FwRule
 	FwRuleIdx int
-	SrcIPs    string
+	SrcIP     string
 	SrcZone   string
 	SrcInt    string
 
-	DstIPs  string
+	DstIP   string
 	DstZone string
 	DstInt  string
 

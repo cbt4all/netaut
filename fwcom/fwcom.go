@@ -77,9 +77,7 @@ func ParseRecords(record []string, csvColumns map[string]int) FwRule {
 	Ports := strings.Split(record[csvColumns["Ports"]], "\n")
 
 	fwrule.SrcIPs = ValidateIPs(SrcIPs)
-	fwrule.SrcZone = nil
 	fwrule.DstIPs = ValidateIPs(DstIPs)
-	fwrule.DstZone = nil
 	fwrule.Protocol = Protocol
 	fwrule.Ports = Ports
 
