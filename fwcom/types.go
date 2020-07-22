@@ -23,6 +23,6 @@ type FwRuleSimple struct {
 	DstInt  string
 
 	Protocol string
-	Ports    string
+	Port     string
 	Needed   bool
 }
