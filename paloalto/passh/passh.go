@@ -10,7 +10,7 @@ import (
 // on the given <virtual-router> and <ip-address>. for example if the <virtual-router> be 'default' and the <ip-address> be 192.168.1.1
 // this function returns 'test routing fib-lookup virtual-router default ip 192.168.1.1
 func TestRouteFibInterfaceCmd(vr, ip string) string {
-	// s is Virtual Router
+	// vr is Virtual Router
 	if net.ParseIP(ip) == nil {
 		log.Fatal(ip + " is not a valid IP")
 	}
