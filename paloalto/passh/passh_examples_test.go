@@ -6,14 +6,16 @@ func ExampleTestRouteFibInterfaceCmd() {
 	cmd := TestRouteFibInterfaceCmd("default", "192.168.1.1")
 	fmt.Println(cmd)
 
-	// Output will be: 'test routing fib-lookup virtual-router default ip 192.168.1.1'
+	// Output:
+	// test routing fib-lookup virtual-router default ip 192.168.1.1
 }
 
 func ExampleShowInterfaceCmd() {
 	inet := ShowInterfaceCmd("ae1.1345")
 
 	fmt.Println(inet)
-	// Output will be: 'show interface ae1.1345'
+	// Output:
+	// show interface ae1.1345
 }
 
 func ExampleTestSecurityPolicyMatchCmd() {
@@ -37,6 +39,6 @@ func ExampleTestSecurityPolicyMatchCmd() {
 
 	cmd, _ := TestSecurityPolicyMatchCmd(cfg)
 	fmt.Println(cmd)
-	// Output will be:
-	// 'test security-policy-match protocol 6 from ZONE1 to ZONE2 source 192.168.0.1 destination 172.16.0.1 destination-port 22 application ssh'
+	// Output:
+	// test security-policy-match protocol 6 from ZONE1 to ZONE2 source 192.168.0.1 destination 172.16.0.1 destination-port 22 application ssh
 }

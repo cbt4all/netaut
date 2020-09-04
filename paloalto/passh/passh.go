@@ -6,9 +6,9 @@ import (
 	"net"
 )
 
-// TestRouteFibInterfaceCmd generate the command 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>
-// on the given <virtual-router> and <ip-address>. for example if the <virtual-router> be 'default' and the <ip-address> be 192.168.1.1
-// this function returns 'test routing fib-lookup virtual-router default ip 192.168.1.1
+/* TestRouteFibInterfaceCmd generate the command 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>
+on the given <virtual-router> and <ip-address>.
+*/
 func TestRouteFibInterfaceCmd(vr, ip string) string {
 	// vr is Virtual Router
 	if net.ParseIP(ip) == nil {
@@ -17,13 +17,14 @@ func TestRouteFibInterfaceCmd(vr, ip string) string {
 	return "test routing fib-lookup virtual-router " + vr + " ip " + ip
 }
 
-// ShowInterfaceCmd ...
+// ShowInterfaceCmd generate the command 'show interface <interface>' on the given <interface>
 func ShowInterfaceCmd(s string) string {
 	// s is Interface Name
 	return "show interface " + s + " "
 }
 
-// TestSecurityPolicyMatchCmd ...
+// TestSecurityPolicyMatchCmd generate the command ' test security-policy-match protocol 6 from <source-zone> to <destination-zone>
+//
 func TestSecurityPolicyMatchCmd(cfg [7]string) (string, error) {
 	// test security-policy-match protocol 6 from Mgmt-Outside to Mgmt-HP source 10.115.0.136 destination 10.115.233.21 destination-port 443 application ssh
 	// cfg[0] is Protocol Number (e.g. 6)
