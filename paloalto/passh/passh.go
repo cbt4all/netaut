@@ -6,13 +6,15 @@ import (
 	"net"
 )
 
-// TestRouteFibInterfaceCmd ...
-func TestRouteFibInterfaceCmd(s, ip string) string {
+// TestRouteFibInterfaceCmd generate the command 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>
+// on the given <virtual-router> and <ip-address>. for example if the <virtual-router> be 'default' and the <ip-address> be 192.168.1.1
+// this function returns 'test routing fib-lookup virtual-router default ip 192.168.1.1
+func TestRouteFibInterfaceCmd(vr, ip string) string {
 	// s is Virtual Router
 	if net.ParseIP(ip) == nil {
 		log.Fatal(ip + " is not a valid IP")
 	}
-	return "test routing fib-lookup virtual-router " + s + " ip " + ip
+	return "test routing fib-lookup virtual-router " + vr + " ip " + ip
 }
 
 // ShowInterfaceCmd ...

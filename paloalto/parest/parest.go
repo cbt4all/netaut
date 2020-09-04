@@ -100,6 +100,7 @@ func GetZone(fip, Intrfc, key string) []byte {
 func TestSecurityPolicyMatch() {
 
 	// test security-policy-match protocol 6 from ZONE1 to ZONE9 source 10.1.1.1 destination 10.115.10.11 destination-port 135
+	//<request cmd="op" cookie="4032893371262777" uid="522"><operations><test><security-policy-match><protocol>6</protocol><source>10.111.246.1</source><destination>1.1.1.1</destination><destination-port>443</destination-port><from>SYSTEMS</from><to>WAN</to></security-policy-match></test></operations></request>
 
 }
 
