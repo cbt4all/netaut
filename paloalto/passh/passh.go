@@ -6,58 +6,59 @@ import (
 	"net"
 )
 
-/* TestRouteFibInterfaceCmd generate the command 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>
-on the given <virtual-router> and <ip-address>.
-*/
-func TestRouteFibInterfaceCmd(vr, ip string) string {
-	// vr is Virtual Router
+// TestRouteFibLookupCmd generates the command 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>'
+// on the given <virtual-router> and <ip-address>.
+// vr is Virtual Router
+func TestRouteFibLookupCmd(vr, ip string) string {
+
 	if net.ParseIP(ip) == nil {
 		log.Fatal(ip + " is not a valid IP")
 	}
+
 	return "test routing fib-lookup virtual-router " + vr + " ip " + ip
 }
 
-// ShowInterfaceCmd generate the command 'show interface <interface>' on the given <interface>
+// ShowInterfaceCmd generates the command 'show interface <interface>' on the given <interface>.
+// s is Interface Name
 func ShowInterfaceCmd(s string) string {
-	// s is Interface Name
+
 	return "show interface " + s + " "
 }
 
-// TestSecurityPolicyMatchCmd generate the command ' test security-policy-match protocol 6 from <source-zone> to <destination-zone>
-//
+// TestSecurityPolicyMatchCmd generates the command ' test security-policy-match protocol 6 from <source-zone> to <destination-zone> source <source-ip-address>
+// destination <destination-ip-address> destination-port <destination-port> application <application-name>
+// cfg[0] is Protocol Number (e.g. 6)
+// cfg[1] is Source Zone
+// cfg[2] is Destination Zone
+// cfg[3] is Source IP
+// cfg[4] is Destination IP
+// cfg[5] is Destination Port
+// cfg[6] is Application
 func TestSecurityPolicyMatchCmd(cfg [7]string) (string, error) {
-	// test security-policy-match protocol 6 from Mgmt-Outside to Mgmt-HP source 10.115.0.136 destination 10.115.233.21 destination-port 443 application ssh
-	// cfg[0] is Protocol Number (e.g. 6)
-	// cfg[1] is Source Zone
-	// cfg[2] is Destination Zone
-	// cfg[3] is Source IP
-	// cfg[4] is Destination IP
-	// cfg[5] is Destination Port
-	// cfg[6] is Application
 
-	err := errors.New("nil")
-	err = nil
+	outErr := errors.New("nil")
+	outErr = nil
 	var result string
 
 	if cfg[0] == "" {
-		err = errors.New("Fist parameter should be protocol number!\n")
-		return "", err
+		outErr = errors.New("Fist parameter should be protocol number!\n")
+		return "", outErr
 	}
 	if cfg[1] == "" {
-		err = errors.New("Second parameter should be Source Zone!\n")
-		return "", err
+		outErr = errors.New("Second parameter should be Source Zone!\n")
+		return "", outErr
 	}
 	if cfg[2] == "" {
-		err = errors.New("Fist parameter should be Destination Zone!\n")
-		return "", err
+		outErr = errors.New("Fist parameter should be Destination Zone!\n")
+		return "", outErr
 	}
 	if cfg[3] == "" {
-		err = errors.New("Fist parameter should be Source IP!\n")
-		return "", err
+		outErr = errors.New("Fist parameter should be Source IP!\n")
+		return "", outErr
 	}
 	if cfg[4] == "" {
-		err = errors.New("Fist parameter should be Destination IP!\n")
-		return "", err
+		outErr = errors.New("Fist parameter should be Destination IP!\n")
+		return "", outErr
 	}
 
 	result = "test security-policy-match protocol " + cfg[0] + " from " + cfg[1] + " to " + cfg[2] + " source " + cfg[3] + " destination " + cfg[4]
@@ -69,5 +70,5 @@ func TestSecurityPolicyMatchCmd(cfg [7]string) (string, error) {
 		result = result + " application " + cfg[6]
 	}
 
-	return result, err
+	return result, outErr
 }

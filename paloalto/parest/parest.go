@@ -8,16 +8,14 @@ import (
 	"net/http"
 )
 
-// GetFibInterface ...
-func GetFibInterface(fip, vr, dip, key string) []byte {
-
-	// https://192.168.1.250/api/?type=op&cmd=<test><routing><fib-lookup><virtual-router>default</virtual-router>
-	// <ip>172.1.16.1</ip></fib-lookup></routing></test>&key=LUFRPT14MW5xOEo1R09KVlBZNnpnemh0VHRBOWl6TGM9bXcwM3JHUGVhRlNiY0dCR0srNERUQT09"
-
-	// fip Firewall IP
-	// vr Virtual-Router
-	// dip Destination IP
-	// key Token/Key should be takan manually
+// TestRouteFibLookupRest generates REST URL to be used to get firewall interface information. This coresonds corresponds with
+// the command 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI but here is used on firewall REST API.
+// Output will be in XML format. In the command we have:
+// fip is Firewall IP
+// vr is Virtual-Router
+// dip is Destination IP
+// key is Token/Key should be takan manually from firewall
+func TestRouteFibLookupRest(fip, vr, dip, key string) []byte {
 
 	url := "https://" + fip + "/api/?type=op&cmd=<test><routing><fib-lookup><virtual-router>" + vr + "</virtual-router>"
 	url = url + "<ip>" + dip + "</ip></fib-lookup></routing></test>&key=" + key
@@ -53,14 +51,13 @@ func GetFibInterface(fip, vr, dip, key string) []byte {
 	return body
 }
 
-//GetZone ...
-func GetZone(fip, Intrfc, key string) []byte {
-	// <show><interface>ethernet1/1</interface></show>
-	// &key=LUFRPT14MW5xOEo1R09KVlBZNnpnemh0VHRBOWl6TGM9bXcwM3JHUGVhRlNiY0dCR0srNERUQT09
-
-	// fip Firewall IP
-	// Intrfc is the Interface you need to find the Zone of
-	// key Token/Key should be takan manually
+// ShowInterfaceRest generates REST URL to be used to get firewall interface information. This coresonds corresponds with
+// the command 'show interface <interface>' in CLI but here is used on firewall REST API.
+// Output will be in XML format. In the command we have:
+// fip is Firewall IP
+// Intrfc is the interface we want
+// key is Token/Key should be takan manually from firewall
+func ShowInterfaceRest(fip, Intrfc, key string) []byte {
 
 	url := "https://" + fip + "/api/?type=op&cmd=<show><interface>" + Intrfc
 	url = url + "</interface></show>&key=" + key

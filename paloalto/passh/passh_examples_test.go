@@ -2,8 +2,8 @@ package passh
 
 import "fmt"
 
-func ExampleTestRouteFibInterfaceCmd() {
-	cmd := TestRouteFibInterfaceCmd("default", "192.168.1.1")
+func ExampleTestRouteFibLookupCmd() {
+	cmd := TestRouteFibLookupCmd("default", "192.168.1.1")
 	fmt.Println(cmd)
 
 	// Output:
@@ -11,15 +11,15 @@ func ExampleTestRouteFibInterfaceCmd() {
 }
 
 func ExampleShowInterfaceCmd() {
-	inet := ShowInterfaceCmd("ae1.1345")
 
-	fmt.Println(inet)
+	cmd := ShowInterfaceCmd("ae1.1345")
+	fmt.Println(cmd)
+
 	// Output:
 	// show interface ae1.1345
 }
 
 func ExampleTestSecurityPolicyMatchCmd() {
-
 	// cfg[0] is Protocol Number (e.g. 6)
 	// cfg[1] is Source Zone
 	// cfg[2] is Destination Zone
@@ -39,6 +39,7 @@ func ExampleTestSecurityPolicyMatchCmd() {
 
 	cmd, _ := TestSecurityPolicyMatchCmd(cfg)
 	fmt.Println(cmd)
+
 	// Output:
 	// test security-policy-match protocol 6 from ZONE1 to ZONE2 source 192.168.0.1 destination 172.16.0.1 destination-port 22 application ssh
 }
