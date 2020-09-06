@@ -60,12 +60,17 @@ func TestSecurityPolicyMatchCmd(cfg [7]string) (string, error) {
 		outErr = errors.New("Fist parameter should be Destination IP!\n")
 		return "", outErr
 	}
-
-	result = "test security-policy-match protocol " + cfg[0] + " from " + cfg[1] + " to " + cfg[2] + " source " + cfg[3] + " destination " + cfg[4]
-
-	if cfg[5] != "" {
-		result = result + " destination-port " + cfg[5]
+	if cfg[5] == "" {
+		outErr = errors.New("Fist parameter should be Destination Port!\n")
+		return "", outErr
 	}
+
+	result = "test security-policy-match"
+	result = result + " protocol " + cfg[0]
+	result = result + " from " + cfg[1] + " to " + cfg[2]
+	result = result + " source " + cfg[3] + " destination " + cfg[4]
+	result = result + " destination-port " + cfg[5]
+
 	if cfg[6] != "nil" {
 		result = result + " application " + cfg[6]
 	}

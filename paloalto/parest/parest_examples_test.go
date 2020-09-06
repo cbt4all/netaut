@@ -140,3 +140,28 @@ func ExampleShowInterfaceRest() {
 		</response>
 	*/
 }
+
+ExampleTestSecurityPolicyMatchRest(){
+	// cfg[0] is Protocol Number (e.g. 6)
+	// cfg[1] is Source Zone
+	// cfg[2] is Destination Zone
+	// cfg[3] is Source IP
+	// cfg[4] is Destination IP
+	// cfg[5] is Destination Port
+	// cfg[6] is Application
+	var cfg [7]string
+
+	cfg[0] = "6"
+	cfg[1] = "ZONE1"
+	cfg[2] = "ZONE2"
+	cfg[3] = "192.168.0.1"
+	cfg[4] = "172.16.0.1"
+	cfg[5] = "22"
+	cfg[6] = "ssh"
+
+	b, _ := TestSecurityPolicyMatchRest("192.168.1.250",cfg,"LUFRPT14MW5xOEo1R09KVlBZNnpnemh0")
+	fmt.Println(string(b))
+
+	// Output:
+	// test security-policy-match protocol 6 from ZONE1 to ZONE2 source 192.168.0.1 destination 172.16.0.1 destination-port 22 application ssh
+}
