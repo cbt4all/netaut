@@ -1,4 +1,4 @@
-package parest
+package palapi
 
 import (
 	"crypto/tls"
@@ -9,14 +9,14 @@ import (
 	"net/http"
 )
 
-// TestRouteFibLookupRest generates REST URL to be used to get firewall interface information. This coresonds corresponds
+// TestRouteFibLookupApi generates REST URL to be used to get firewall interface information. This coresonds corresponds
 // the command 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI but here is used on firewall REST API.
 // Output will be in XML format. In the command we have:
 // fip is Firewall IP
 // vr is Virtual-Router
 // dip is Destination IP
 // key is Token/Key should be takan manually from firewall
-func TestRouteFibLookupRest(fip, vr, dip, key string) []byte {
+func TestRouteFibLookupApi(fip, vr, dip, key string) []byte {
 
 	url := "https://" + fip + "/api/?type=op&cmd=<test><routing><fib-lookup><virtual-router>" + vr + "</virtual-router>"
 	url = url + "<ip>" + dip + "</ip></fib-lookup></routing></test>&key=" + key
@@ -52,13 +52,13 @@ func TestRouteFibLookupRest(fip, vr, dip, key string) []byte {
 	return body
 }
 
-// ShowInterfaceRest generates REST URL to be used to get firewall interface information. This coresonds corresponds
+// ShowInterfaceApi generates REST URL to be used to get firewall interface information. This coresonds corresponds
 // the command 'show interface <interface>' in CLI but here is used on firewall REST API.
 // Output will be in XML format. In the command we have:
 // fip is Firewall IP
 // Intrfc is the interface we want
 // key is Token/Key should be takan manually from firewall
-func ShowInterfaceRest(fip, Intrfc, key string) []byte {
+func ShowInterfaceApi(fip, Intrfc, key string) []byte {
 
 	url := "https://" + fip + "/api/?type=op&cmd=<show><interface>" + Intrfc
 	url = url + "</interface></show>&key=" + key
@@ -94,7 +94,7 @@ func ShowInterfaceRest(fip, Intrfc, key string) []byte {
 	return body
 }
 
-// TestSecurityPolicyMatchRest generates REST URL to be used to get firewall interface information. This coresonds corresponds
+// TestSecurityPolicyMatchApi generates REST URL to be used to get firewall interface information. This coresonds corresponds
 // the command 'test security-policy-match protocol 6 from <source-zone> to <destination-zone> source <source-ip-address>
 // destination <destination-ip-address> destination-port <destination-port> application <application-name>
 // fip is Firewall IP
@@ -107,15 +107,7 @@ func ShowInterfaceRest(fip, Intrfc, key string) []byte {
 // cfg[5] is Destination Port
 // cfg[6] is Application
 // key is Token/Key should be takan manually from firewall
-func TestSecurityPolicyMatchRest(fip string, cfg [7]string, key string) ([]byte, error) {
-
-	//<test><security-policy-match>
-	//<protocol>6</protocol>
-	//<from>ZONE1</from><to>ZONE2</to>
-	//<source>10.111.246.1</source><destination>1.1.1.1</destination>
-	//<destination-port>22</destination-port>
-	//<application>ssh</application>
-	//</security-policy-match></test>
+func TestSecurityPolicyMatchApi(fip string, cfg [7]string, key string) ([]byte, error) {
 
 	outErr := errors.New("nil")
 	outErr = nil
@@ -193,6 +185,13 @@ func TestSecurityPolicyMatchRest(fip string, cfg [7]string, key string) ([]byte,
 
 }
 
+// Get Object names
+// https://192.168.1.249/restapi/v9.1/Objects/Addresses?location=vsys&vsys=vsys1
+// https://192.168.1.249/restapi/v9.1/Objects/Addresses?location=vsys&vsys=vsys1&name=Eth1_1.1.1.254_24
+// https://192.168.1.249/restapi/v9.1/Objects/AddressGroups?location=vsys&vsys=vsys1&name=TestObject
+
 // Get Firewall Policy
+// https://192.168.1.249/restapi/v9.1/Policies/SecurityRules?location=vsys&vsys=vsys1&name=Z1-Z2
+// https://192.168.1.249/restapi/v9.1/Policies/SecurityRules?location=vsys&vsys=vsys1&source=HOST_10.1.0.1
 
 // Push Frewall Policy

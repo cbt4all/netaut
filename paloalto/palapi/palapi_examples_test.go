@@ -1,10 +1,10 @@
-package parest
+package palapi
 
 import "fmt"
 
-func ExampleTestRouteFibLookupRest() {
+func ExampleTestRouteFibLookupApi() {
 
-	b := TestRouteFibLookupRest("192.168.1.250", "default", "172.1.16.1", "LUFRPT14MW5xOEo1R09KVlBZNnpnemh0")
+	b := TestRouteFibLookupApi("192.168.1.250", "default", "172.1.16.1", "LUFRPT14MW5xOEo1R09KVlBZNnpnemh0")
 	fmt.Println(string(b))
 
 	// What is sent is:
@@ -24,9 +24,9 @@ func ExampleTestRouteFibLookupRest() {
 	// </response>
 }
 
-func ExampleShowInterfaceRest() {
+func ExampleShowInterfaceApi() {
 
-	b := ShowInterfaceRest("192.168.1.250", "ethernet1/1", "LUFRPT14MW5xOEo1R09KVlBZNnpnemh0")
+	b := ShowInterfaceApi("192.168.1.250", "ethernet1/1", "LUFRPT14MW5xOEo1R09KVlBZNnpnemh0")
 	fmt.Println(string(b))
 
 	// What is sent:
@@ -141,7 +141,7 @@ func ExampleShowInterfaceRest() {
 	*/
 }
 
-ExampleTestSecurityPolicyMatchRest(){
+func ExampleTestSecurityPolicyMatchApi() {
 	// cfg[0] is Protocol Number (e.g. 6)
 	// cfg[1] is Source Zone
 	// cfg[2] is Destination Zone
@@ -159,9 +159,41 @@ ExampleTestSecurityPolicyMatchRest(){
 	cfg[5] = "22"
 	cfg[6] = "ssh"
 
-	b, _ := TestSecurityPolicyMatchRest("192.168.1.250",cfg,"LUFRPT14MW5xOEo1R09KVlBZNnpnemh0")
+	b, _ := TestSecurityPolicyMatchApi("192.168.1.250", cfg, "LUFRPT14MW5xOEo1R09KVlBZNnpnemh0")
 	fmt.Println(string(b))
 
+	// What is sent:
+	// https://192.168.1.250/api/?type=op&cmd=<test><security-policy-match>
+	// <protocol>6</protocol>
+	// <from>ZONE1</from><to>ZONE2</to>
+	// <source>192.168.0.1</source><destination>172.16.0.1</destination>
+	// <destination-port>22</destination-port>
+	// <application>ssh</application>
+	// </security-policy-match></test>
+	// &key=LUFRPT14MW5xOEo1R09KVlBZNnpnemh0
+
 	// Output:
-	// test security-policy-match protocol 6 from ZONE1 to ZONE2 source 192.168.0.1 destination 172.16.0.1 destination-port 22 application ssh
+	/*
+		<response cmd="status" status="success">
+			<result>
+				<rules>
+					<entry name="DenyAll">
+						<index>9</index>
+						<from>any</from>
+						<source>any</source>
+						<source-region>none</source-region>
+						<to>any</to>
+						<destination>any</destination>
+						<destination-region>none</destination-region>
+						<user>any</user>
+						<category>any</category>
+						<application_service>0:any/any/any/app-default</application_service>
+						<action>deny</action>
+						<icmp-unreachable>no</icmp-unreachable>
+						<terminal>no</terminal>
+					</entry>
+				</rules>
+			</result>
+		</response>
+	*/
 }
