@@ -2,55 +2,37 @@ package paloalto
 
 import (
 	"encoding/xml"
-	"errors"
 )
 
-// ParseXMLFibResult ...
+// ParseXMLFibResult gets s as XML format, parses it and return a FibResult
 func ParseXMLFibResult(s string) (FibResult, error) {
-
 	// s is the string format of an xml
-
 	var fbr FibResult
 
-	// Creating outerr as Output Error.
-	outerr := errors.New("nil")
-	outerr = nil
-
 	b := []byte(s)
-	outerr = xml.Unmarshal(b, &fbr)
+	err := xml.Unmarshal(b, &fbr)
 
-	return fbr, outerr
+	return fbr, err
 }
 
-// ParseXMLIfNet ...
+// ParseXMLIfNet gets s as XML format, parses it and return an IfNetResult
 func ParseXMLIfNet(s string) (IfNetResult, error) {
-
 	// s is the string format of an xml
-
 	var ifnet IfNetResult
 
-	// Creating outerr as Output Error.
-	outerr := errors.New("nil")
-	outerr = nil
-
 	b := []byte(s)
-	outerr = xml.Unmarshal(b, &ifnet)
+	err := xml.Unmarshal(b, &ifnet)
 
-	return ifnet, outerr
+	return ifnet, err
 }
 
-// ParseXMLPolicyMatch ...
+// ParseXMLPolicyMatch gets s as XML format, parses it and return a PolicyMatchResult
 func ParseXMLPolicyMatch(s string) (PolicyMatchResult, error) {
 	// s is the string format of an xml
-
 	var plcm PolicyMatchResult
 
-	// Creating outerr as Output Error.
-	outerr := errors.New("nil")
-	outerr = nil
-
 	b := []byte(s)
-	outerr = xml.Unmarshal(b, &plcm)
+	err := xml.Unmarshal(b, &plcm)
 
-	return plcm, outerr
+	return plcm, err
 }

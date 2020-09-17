@@ -7,6 +7,16 @@ import (
 	"net/http"
 )
 
+type PClient struct {
+	settings Settings
+}
+
+// Settings helps us to add settings on some function we are using. For example, if we want to use username and password to login to the firewalls or are we
+// using token/Keys and based on this settings different authentication methods are use while logininig to firewall. Other things can be set here is to choose which
+// type of APIs we want to use (REST API or XML API)
+type Settings struct {
+}
+
 // TestRouteFibLookupApi generates REST/XML URL to be used to get firewall FIB information. This coresonds corresponds
 // the command 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI but here is used on firewall REST/XML API.
 // Output will be in XML/Jason format, depends on how the parameter 'api' is used.
@@ -218,7 +228,6 @@ func TestSecurityPolicyMatch(fip string, cfg [7]string, key, api string) ([]byte
 	}
 
 	return nil, errors.New("wrong type of API is used.")
-
 }
 
 // testSecurityPolicyMatchXML generates an URL to be used to get firewall interface information. This coresonds corresponds
@@ -317,6 +326,12 @@ func testSecurityPolicyMatchXML(fip string, cfg [7]string, key string) ([]byte, 
 // cfg[6] is Application
 // key is Token/Key should be takan manually from firewall
 func testSecurityPolicyMatchRST(fip string, cfg [7]string, key string) ([]byte, error) {
+	// To Do
+	//
+	return nil, nil
+}
+
+func FindObjectAddress() ([]byte, error) {
 	// To Do
 	//
 	return nil, nil
