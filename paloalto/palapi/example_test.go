@@ -81,4 +81,29 @@ func Example_testSecurityPolicyMatch() {
 	}
 
 	fmt.Println(string(b))
+
+	// Output:
+	/*
+		<response cmd="status" status="success">
+			<result>
+				<rules>
+					<entry name="DenyAll">
+						<index>9</index>
+						<from>any</from>
+						<source>any</source>
+						<source-region>none</source-region>
+						<to>any</to>
+						<destination>any</destination>
+						<destination-region>none</destination-region>
+						<user>any</user>
+						<category>any</category>
+						<application_service>0:any/any/any/app-default</application_service>
+						<action>deny</action>
+						<icmp-unreachable>no</icmp-unreachable>
+						<terminal>no</terminal>
+					</entry>
+				</rules>
+			</result>
+		</response>
+	*/
 }
