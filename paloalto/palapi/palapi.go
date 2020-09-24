@@ -174,8 +174,6 @@ func (c PClient) TestRouteFibLookup(vr, dip string) ([]byte, error) {
 			return nil, errors.New("Wrong type of API is used.")
 		}
 	}
-
-	return nil, errors.New("Wrong type of API is used.")
 }
 
 // testRouteFibLookupXML generates an URL to be used to get firewall FIB information. This coresonds corresponds
@@ -256,8 +254,6 @@ func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 			return nil, errors.New("Wrong type of API is used.")
 		}
 	}
-
-	return nil, errors.New("Wrong type of API is used.")
 }
 
 // showInterfaceXML generates XML URL to be used to get firewall interface information. This coresonds corresponds
@@ -345,8 +341,6 @@ func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 			return nil, errors.New("Wrong type of API is used.")
 		}
 	}
-
-	return nil, errors.New("Wrong type of API is used.")
 }
 
 // testSecurityPolicyMatchXML generates an URL to be used to get firewall interface information. This coresonds corresponds
