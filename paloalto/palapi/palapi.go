@@ -24,7 +24,9 @@ type ClientSettings struct {
 }
 
 // NewClientSettings takes all parameters needed and returns a new ClientSettings
-func NewClientSettings(api, auth int, key, user, pass string) (cs *ClientSettings, err error) {
+func NewClientSettings(api, auth int, key, user, pass string) (*ClientSettings, error) {
+
+	cs := new(ClientSettings)
 
 	// Which API should be used
 	cs.Api = api
@@ -69,7 +71,9 @@ type PClient struct {
 }
 
 // NewPClient takes all parameters needed and returns a new PClient
-func NewPClient(cs *ClientSettings, fip, p string, certSkip bool) (c *PClient, err error) {
+func NewPClient(cs *ClientSettings, fip, p string, certSkip bool) (*PClient, error) {
+
+	c := new(PClient)
 
 	c.Settings = cs
 
