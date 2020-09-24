@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func Example_showInterface() {
+func ExampleshowInterface() {
 
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
 	if err != nil {
@@ -23,7 +23,6 @@ func Example_showInterface() {
 	}
 
 	fmt.Println(string(b))
-
 }
 
 func ExampleNewClientSettings() {
