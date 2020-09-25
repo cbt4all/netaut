@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+
+	"github.com/cbt4all/netaut/paloalto"
 )
 
 const (
@@ -170,6 +172,26 @@ func (c PClient) TestRouteFibLookup(vr, dip string) ([]byte, error) {
 	}
 }
 
+// GetInterfaceFromFIB uses TestRouteFibLookup to get FIB info, then parses the XML response to get only interface name. This method gets:
+// vr is Virtual-Router
+// dip is Destination IP
+func (c PClient) GetInterfaceFromFIB(vr, dip string) (string, error) {
+
+	// Get FIB info for Source IP
+	result, err := c.TestRouteFibLookup(vr, dip)
+	if err != nil {
+		return "", err
+	}
+
+	// Parse the output
+	fbr, err := paloalto.ParseXMLFibResult(string(result))
+	if err != nil {
+		return "", err
+	}
+
+	return fbr.Result.Interface, nil
+}
+
 // testRouteFibLookupXML generates an URL to be used to get firewall FIB information. This coresonds corresponds
 // the command 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI but here is used on firewall XML API.
 // Output will be in XML format. This method gets:
@@ -210,8 +232,7 @@ func (c PClient) testRouteFibLookupRST(vr, dip string) (url string, err error) {
 
 // ShowInterface find firewall interface information for a given interface. It uses different protocols (REST/XML API) and authentication methods
 // (Key/Token or Basic User/Pass) deponds on what is set for PClient settings. Output will be in XML/Jason format, depends on what protocol is used. This method gets:
-// vr is Virtual-Router
-// dip is Destination IP
+// Intrfc is the interface
 func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 
 	switch c.Settings.Api {
@@ -241,6 +262,24 @@ func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 			return nil, errors.New("Wrong type of API is used.")
 		}
 	}
+}
+
+// GetZoneFromInt uses ShowInterface to get interface info, then parses the XML response to get only Zone name. This method gets:
+// Intrfc is the interface
+func (c PClient) GetZoneFromInt(Intrfc string) (string, error) {
+
+	// Get Source Zone Info info
+	result, err := c.ShowInterface(Intrfc)
+	if err != nil {
+		return "", nil
+	}
+
+	// Parse the output
+	ifnet, err := paloalto.ParseXMLIfNet(string(result))
+	if err != nil {
+		return "", nil
+	}
+	return ifnet.Result.Ifnet.Zone, nil
 }
 
 // showInterfaceXML generates XML URL to be used to get firewall interface information. This coresonds corresponds
@@ -321,6 +360,31 @@ func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 			return nil, errors.New("Wrong type of API is used.")
 		}
 	}
+}
+
+// GetZoneFromInt uses TestSecurityPolicyMatch to get Test Security Policy Match result, then parses the XML response to get only Action . This method gets:
+// cfg[0] is Protocol Number (e.g. 6)
+// cfg[1] is Source Zone
+// cfg[2] is Destination Zone
+// cfg[3] is Source IP
+// cfg[4] is Destination IP
+// cfg[5] is Destination Port
+// cfg[6] is Application
+func (c PClient) GetPolicyMatch(cfg [7]string) (string, error) {
+
+	// Get Test Security Policy Match result
+	result, err := c.TestSecurityPolicyMatch(cfg)
+	if err != nil {
+		return "", err
+	}
+
+	// Parse the output
+	plcm, err := paloalto.ParseXMLPolicyMatch(string(result))
+	if err != nil {
+		return "", err
+	}
+
+	return plcm.Result.Rules.Entry.Action, nil
 }
 
 // testSecurityPolicyMatchXML generates an URL to be used to get firewall interface information. This coresonds corresponds
