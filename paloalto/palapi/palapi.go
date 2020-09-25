@@ -363,7 +363,6 @@ func (c PClient) testSecurityPolicyMatchXML(cfg [7]string) (url string, err erro
 	url = url + "<destination-port>" + cfg[5] + "</destination-port>"
 
 	if cfg[6] != "nil" {
-		url = url + " application "
 		url = url + "<application>" + cfg[6] + "</application>"
 	}
 
@@ -372,7 +371,7 @@ func (c PClient) testSecurityPolicyMatchXML(cfg [7]string) (url string, err erro
 	switch c.Settings.Auth {
 	case 0: // Using Key/Token
 		{
-			url = url + "key=" + c.Settings.Key
+			url = url + "&key=" + c.Settings.Key
 			return url, nil
 		}
 	case 1: // Using Basic User/Pass
