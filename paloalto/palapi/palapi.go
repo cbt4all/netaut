@@ -343,16 +343,16 @@ func (c PClient) testSecurityPolicyMatchXML(cfg [7]string) (url string, err erro
 		return "", errors.New("Second parameter should be Source Zone!\n")
 	}
 	if cfg[2] == "" {
-		return "", errors.New("Fist parameter should be Destination Zone!\n")
+		return "", errors.New("Third parameter should be Destination Zone!\n")
 	}
 	if cfg[3] == "" {
-		return "", errors.New("Fist parameter should be Source IP!\n")
+		return "", errors.New("Fourth parameter should be Source IP!\n")
 	}
 	if cfg[4] == "" {
-		return "", errors.New("Fist parameter should be Destination IP!\n")
+		return "", errors.New("Fifth parameter should be Destination IP!\n")
 	}
 	if cfg[5] == "" {
-		return "", errors.New("Fist parameter should be Destination Port!\n")
+		return "", errors.New("Sixth parameter should be Destination Port!\n")
 	}
 
 	url = "https://" + c.Fip + "/api/?type=op&cmd="
