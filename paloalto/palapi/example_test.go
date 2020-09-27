@@ -5,6 +5,31 @@ import (
 	"log"
 )
 
+func Example_GetInterfaceFromFIB() {
+
+	// Create a new ClientSettings
+	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create a new Palo Alto Client
+	c, err := NewPClient(cs, "192.168.1.249", "", true)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get FIB info for IP 1.1.1.1 on the Virtual Router 'default'
+	b, err := c.GetInterfaceFromFIB("default", "1.1.1.1")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(b))
+	// Output:
+	// ethernet1/1
+}
+
 func Example_testRouteFibLookup() {
 
 	// Create a new ClientSettings
@@ -21,6 +46,29 @@ func Example_testRouteFibLookup() {
 
 	// Get FIB info for IP 1.1.1.1 on the Virtual Router 'default'
 	b, err := c.TestRouteFibLookup("default", "1.1.1.1")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(b))
+}
+
+func Example_getZoneFromInt() {
+
+	// Create a new ClientSettings
+	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create a new Palo Alto Client
+	c, err := NewPClient(cs, "192.168.1.249", "", true)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get information of the interface ethernet1/1
+	b, err := c.ShowInterface("ethernet1/1")
 	if err != nil {
 		log.Fatal(err)
 	}
