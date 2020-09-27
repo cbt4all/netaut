@@ -18,15 +18,10 @@ func ReadFWRulesFile(fpath string) ([]FwRule, error) {
 
 	var fwrule []FwRule
 
-	// Creating outerr as Output Error.
-	outerr := errors.New("nil")
-	outerr = nil
-
 	// Open CSV file
 	f, err := os.Open(fpath)
 	if err != nil {
-		outerr = err
-		return fwrule, outerr
+		return fwrule, err
 	}
 	defer f.Close()
 
@@ -41,8 +36,7 @@ func ReadFWRulesFile(fpath string) ([]FwRule, error) {
 			break
 		}
 		if err != nil {
-			outerr = err
-			return fwrule, outerr
+			return fwrule, err
 		}
 
 		//------------ Fill the fields-column Map
@@ -55,7 +49,7 @@ func ReadFWRulesFile(fpath string) ([]FwRule, error) {
 			fwrule = append(fwrule, ParseRecords(record, scvFields))
 		}
 	}
-	return fwrule, outerr
+	return fwrule, nil
 }
 
 // ParseRecords ...
@@ -81,6 +75,9 @@ func ParseRecords(record []string, csvColumns map[string]int) FwRule {
 	fwrule.Protocol = Protocol
 	fwrule.Ports = Ports
 
+	Application := record[csvColumns["Application"]]
+	fwrule.Application = Application
+
 	return fwrule
 }
 
@@ -94,15 +91,16 @@ func ConvertFwRuleToSimple(fwr []FwRule) []FwRuleSimple {
 				for d := 0; d < len(fwr[a].Protocol); d++ {
 					for e := 0; e < len(fwr[a].Ports); e++ {
 						fws = append(fws, FwRuleSimple{
-							FwRuleIdx: a,
-							SrcIP:     fwr[a].SrcIPs[b],
-							SrcZone:   "",
-							SrcInt:    "",
-							DstIP:     fwr[a].DstIPs[c],
-							DstZone:   "",
-							DstInt:    "",
-							Protocol:  fwr[a].Protocol[d],
-							Port:      fwr[a].Ports[e],
+							FwRuleIdx:   a,
+							SrcIP:       fwr[a].SrcIPs[b],
+							SrcZone:     "",
+							SrcInt:      "",
+							DstIP:       fwr[a].DstIPs[c],
+							DstZone:     "",
+							DstInt:      "",
+							Protocol:    fwr[a].Protocol[d],
+							Port:        fwr[a].Ports[e],
+							Application: fwr[a].Application,
 						})
 					}
 				}
@@ -120,6 +118,7 @@ func ConvertSimpleToFwRule(fws []FwRuleSimple) []FwRule {
 	fwr := make([]FwRule, fwrl)
 
 	var sip, dip, sz, dz, p, prot []string
+	var app string
 	var needed bool
 
 	for i := 0; i < fwrl; i++ {
@@ -131,6 +130,7 @@ func ConvertSimpleToFwRule(fws []FwRuleSimple) []FwRule {
 				dz = append(dz, fwsitem.DstZone)
 				p = append(p, fwsitem.Port)
 				prot = append(prot, fwsitem.Protocol)
+				app = fwsitem.Application
 				needed = needed || fwsitem.Needed
 			}
 		}
@@ -144,6 +144,7 @@ func ConvertSimpleToFwRule(fws []FwRuleSimple) []FwRule {
 		fwr[i].DstIPs = tdip
 		fwr[i].Ports = tp
 		fwr[i].Protocol = tprot
+		fwr[i].Application = app
 		fwr[i].Needed = needed
 
 		sip = nil
@@ -152,6 +153,7 @@ func ConvertSimpleToFwRule(fws []FwRuleSimple) []FwRule {
 		dz = nil
 		p = nil
 		prot = nil
+		app = ""
 		needed = false
 	}
 	return fwr
@@ -179,15 +181,10 @@ func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 	// Sources		Destinations		Protocol		Ports				Applications
 	// SourceInt	DestinationsInt		SourceZone		DestinationsZone	Needed		FirewallIndex
 
-	// Creating outerr as Output Error.
-	outerr := errors.New("nil")
-	outerr = nil
-
 	// Open CSV file
 	f, err := os.OpenFile(fpath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
 	if err != nil {
-		outerr = err
-		return outerr
+		return err
 	}
 	defer f.Close()
 
@@ -199,7 +196,7 @@ func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 			fw.DstIP,
 			fw.Protocol,
 			fw.Port,
-			"",
+			fw.Application,
 			fw.SrcInt,
 			fw.DstInt,
 			fw.SrcZone,
@@ -207,8 +204,8 @@ func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 			strconv.FormatBool(fw.Needed),
 			strconv.Itoa(fw.FwRuleIdx),
 		}); err != nil {
-			outerr = err
-			return outerr
+
+			return err
 		}
 	}
 
@@ -216,11 +213,10 @@ func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 	w.Flush()
 
 	if err := w.Error(); err != nil {
-		outerr = err
-		return outerr
+		return err
 	}
 
-	return outerr
+	return nil
 }
 
 // WriteFwRuleCSV ...
