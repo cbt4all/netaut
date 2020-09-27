@@ -75,7 +75,7 @@ func ParseRecords(record []string, csvColumns map[string]int) FwRule {
 	fwrule.Protocol = Protocol
 	fwrule.Ports = Ports
 
-	Application := record[csvColumns["Application"]]
+	Application := record[csvColumns["Applications"]]
 	fwrule.Application = Application
 
 	return fwrule
