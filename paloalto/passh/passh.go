@@ -21,7 +21,7 @@ func TestRouteFibLookupCmd(vr, dip string) string {
 	return "test routing fib-lookup virtual-router " + vr + " ip " + dip
 }
 
-// ParseInterfaceFromFIB gets an XML then parses it and returns to get only interface name.
+// ParseInterfaceFromFIB gets an XML then parses it and returns to get only interface name. 
 func ParseInterfaceFromFIB(s string) (string, error) {
 
 	// Parse the output
