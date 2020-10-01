@@ -24,12 +24,12 @@ func Example_execCommands() {
 
 	rhc := CreateRhConfig("192.168.1.1", "tcp", "22")
 
-	restult, err := ExecCommands(rhc, initcmd, listCMDs, sshconfig)
+	result, err := ExecCommands(rhc, initcmd, listCMDs, sshconfig)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, item := range restult {
+	for _, item := range result {
 		fmt.Println(item.Cmd)
 		fmt.Println(item.Result)
 	}

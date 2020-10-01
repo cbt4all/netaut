@@ -2,6 +2,7 @@ package sshclient
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"log"
@@ -55,10 +56,10 @@ func InsecureClientConfig(userStr, passStr string, t time.Duration) *ssh.ClientC
 	return SSHconfig
 }
 
-// ExecCommands uses ssh.Dial to dials to remote-host, applies what is mentioned in 'initcmds' as initial commands, then 'cmds' as commands. This function needs
+// ExecCommandsAdvaned uses ssh.Dial to dials to remote-host, applies what is mentioned in 'initcmds' as initial commands, then 'cmds' as commands. This function needs
 // remote-host IP, protocol and port which gets from RhConfig and also ssh.ClientConfig
 // It returns a CmdResults
-func ExecCommands(rhc RhConfig, initcmds, cmds []string, sshconfig *ssh.ClientConfig) ([]CmdResults, error) {
+func ExecCommandsAdvaned(rhc RhConfig, initcmds, cmds []string, sshconfig *ssh.ClientConfig) ([]CmdResults, error) {
 
 	// Creating Output as String
 	var output []CmdResults
@@ -145,7 +146,7 @@ func ExecCommands(rhc RhConfig, initcmds, cmds []string, sshconfig *ssh.ClientCo
 		timer := time.NewTimer(0)
 	InputLoop:
 		for {
-			timer.Reset(time.Second)
+			timer.Reset(2 * time.Second)
 			select {
 			case line, ok := <-stdinLines:
 				if !ok {
@@ -169,4 +170,65 @@ func ExecCommands(rhc RhConfig, initcmds, cmds []string, sshconfig *ssh.ClientCo
 	}
 
 	return output, nil
+}
+
+// ExecCommandsSimple uses ssh.Dial to dials to remote-host, applies commands mentioned in 'cmds'. This function needs
+// remote-host IP, protocol and port which gets from RhConfig and also ssh.ClientConfig
+// It returns a string as result
+func ExecCommandsSimple(rhc RhConfig, cmds []string, sshconfig *ssh.ClientConfig) (string, error) {
+
+	// Dial to the remote-host
+	client, err := ssh.Dial(rhc.protocol, rhc.rh+":"+rhc.port, sshconfig)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Close()
+
+	// Create sesssion
+	session, err := client.NewSession()
+	if err != nil {
+		return "", err
+	}
+	defer session.Close()
+
+	stdin, err := session.StdinPipe()
+	if err != nil {
+		return "", err
+	}
+
+	// Buffer to save the output
+	var b bytes.Buffer
+	session.Stdout = &b
+	session.Stderr = &b
+
+	// Start remote shell
+	err = session.Shell()
+	if err != nil {
+		return "", err
+	}
+
+	// Send the commands to the remotehost one by one.
+	for i, cmd := range cmds {
+		n, err := stdin.Write([]byte(cmd + "\n"))
+		if err != nil {
+			log.Fatal(err)
+		}
+		if i == len(cmds)-1 {
+			_ = stdin.Close() // send eof
+		}
+
+		// Check if the entire command is sent properly
+		if n != len(cmd)+1 {
+			str := "Command " + cmd + " has " + strconv.Itoa(len(cmd)) + " bytes, but " + strconv.Itoa(n) + " bytes sent"
+			return "", errors.New(str)
+		}
+	}
+
+	// Wait for session to finish
+	err = session.Wait()
+	if err != nil {
+		return "", err
+	}
+
+	return b.String(), nil
 }
