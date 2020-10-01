@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-// CmdResults ...
+// CmdResults ..
 type CmdResults struct {
 	Cmd    string
 	Result string
