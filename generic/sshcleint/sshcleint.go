@@ -3,8 +3,9 @@ package sshcleint
 import (
 	"bufio"
 	"errors"
-	"io"
+	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"golang.org/x/crypto/ssh"
@@ -16,62 +17,30 @@ type CmdResults struct {
 	Result string
 }
 
-// TClinet is a Terminal Client
-type TClient struct {
-
-	// rh is Remote Host IP address
+// RhConfig remote-host config
+type RhConfig struct {
 	rh       string
-	CSession *ssh.Session
-	Stdin    io.WriteCloser
-	Stdout   io.Reader
+	protocol string
+	port     string
 }
 
-// NewTClient creats a new TClient
-func NewTClient(rh string, sshconfig *ssh.ClientConfig) (*TClient, error) {
+// CreateRhConfig ...
+func CreateRhConfig(rh, protocol, port string) RhConfig {
 
-	// Create a new TClient
-	tc := new(TClient)
-
-	// Dial to the remote-host
-	client, err := ssh.Dial("tcp", rh+":22", sshconfig)
-	if err != nil {
-		return nil, err
+	rhc := RhConfig{
+		rh,
+		protocol,
+		port,
 	}
-	defer client.Close()
-
-	// Create sesssion
-	tc.CSession, err = client.NewSession()
-	if err != nil {
-		return nil, err
-	}
-	defer tc.CSession.Close()
-
-	// Create StdIn/StOut
-	tc.Stdin, err = tc.CSession.StdinPipe()
-	if err != nil {
-		return nil, err
-	}
-
-	tc.Stdout, err = tc.CSession.StdoutPipe()
-	if err != nil {
-		return nil, err
-	}
-
-	// Start remote shell
-	err = tc.CSession.Shell()
-	if err != nil {
-		return nil, err
-	}
-
-	return tc, nil
+	return rhc
 }
 
 // InsecureClientConfig ...
-func InsecureClientConfig(userStr, passStr string) *ssh.ClientConfig {
+func InsecureClientConfig(userStr, passStr string, t time.Duration) *ssh.ClientConfig {
 
 	SSHconfig := &ssh.ClientConfig{
 		User:    userStr,
-		Timeout: 5 * time.Second,
+		Timeout: t,
 		Auth:    []ssh.AuthMethod{ssh.Password(passStr)},
 
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
@@ -86,22 +55,58 @@ func InsecureClientConfig(userStr, passStr string) *ssh.ClientConfig {
 	return SSHconfig
 }
 
-// ExecCmds ...
-func (tc TClient) ExecCmds(initcmds, cmds []string) ([]CmdResults, error) {
+// ExecCommands uses ssh.Dial to dials to remote-host, applies what is mentioned in 'initcmds' as initial commands, then 'cmds' as commands. This function needs
+// remote-host IP, protocol and port which gets from RhConfig and also ssh.ClientConfig
+// It returns a CmdResults
+func ExecCommands(rhc RhConfig, initcmds, cmds []string, sshconfig *ssh.ClientConfig) ([]CmdResults, error) {
 
 	// Creating Output as String
 	var output []CmdResults
 	var strTmp string
 
+	// Dial to the remote-host
+	client, err := ssh.Dial(rhc.protocol, rhc.rh+":"+rhc.port, sshconfig)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Close()
+
+	// Create sesssion
+	session, err := client.NewSession()
+	if err != nil {
+		return nil, err
+	}
+	defer session.Close()
+
+	stdin, err := session.StdinPipe()
+	if err != nil {
+		return nil, err
+	}
+
+	stdout, err := session.StdoutPipe()
+	if err != nil {
+		return nil, err
+	}
+
+	// Start remote shell
+	err = session.Shell()
+	if err != nil {
+		return nil, err
+	}
+
 	// Send the Initial Commands - no output is saved
 	if len(initcmds) > 0 {
-		for _, cmd := range initcmds {
-			n, err := tc.Stdin.Write([]byte(cmd + "\n"))
+		for i, cmd := range initcmds {
+
+			n, err := stdin.Write([]byte(cmd + "\n"))
 			if err != nil {
+				fmt.Println(i, cmd)
 				return nil, err
 			}
-			if n != len(cmd)-1 {
-				str := "Command" + cmd + " has " + string(len(cmd)) + " bytes, but " + string(n) + " bytes sent"
+
+			// Check if the entire command is sent properly
+			if n != len(cmd)+1 {
+				str := "Command " + cmd + " has " + strconv.Itoa(len(cmd)) + " bytes, but " + strconv.Itoa(n) + " bytes sent"
 				return nil, errors.New(str)
 			}
 		}
@@ -109,7 +114,7 @@ func (tc TClient) ExecCmds(initcmds, cmds []string) ([]CmdResults, error) {
 
 	stdinLines := make(chan string)
 	go func() {
-		scanner := bufio.NewScanner(tc.Stdout)
+		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			stdinLines <- scanner.Text()
 		}
@@ -121,17 +126,17 @@ func (tc TClient) ExecCmds(initcmds, cmds []string) ([]CmdResults, error) {
 
 	// Send the commands to the remotehost one by one.
 	for i, cmd := range cmds {
-		n, err := tc.Stdin.Write([]byte(cmd + "\n"))
+		n, err := stdin.Write([]byte(cmd + "\n"))
 		if err != nil {
 			log.Fatal(err)
 		}
 		if i == len(cmds)-1 {
-			_ = tc.Stdin.Close() // send eof
+			_ = stdin.Close() // send eof
 		}
 
-		// Check if less byte is sent
-		if n != len(cmd)-1 {
-			str := "Command" + cmd + " has " + string(len(cmd)) + " bytes, but " + string(n) + " bytes sent"
+		// Check if the entire command is sent properly
+		if n != len(cmd)+1 {
+			str := "Command " + cmd + " has " + strconv.Itoa(len(cmd)) + " bytes, but " + strconv.Itoa(n) + " bytes sent"
 			return nil, errors.New(str)
 		}
 
@@ -158,7 +163,7 @@ func (tc TClient) ExecCmds(initcmds, cmds []string) ([]CmdResults, error) {
 	}
 
 	// Wait for session to finish
-	err := tc.CSession.Wait()
+	err = session.Wait()
 	if err != nil {
 		return nil, err
 	}

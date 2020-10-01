@@ -3,34 +3,35 @@ package sshcleint
 import (
 	"fmt"
 	"log"
+	"time"
 )
 
-func ExampleNewTClient() {
+func ExampleExecCommands() {
 
-	sshconfig := InsecureClientConfig("admin", "admin")
-
-	tc, err := NewTClient("192.168.1.1", sshconfig)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	// List of initial commands that dont need any outputs
 	initcmd := []string{
-		"set cli op-command-xml-output on\n",
+		"set cli op-command-xml-output on",
 	}
 
 	// List of the commands should be sent to the devices
 	listCMDs := []string{
-		"test routing fib-lookup virtual-router default ip 1.1.1.1\n",
-		"test routing fib-lookup virtual-router default ip 2.2.2.2\n",
+		"test routing fib-lookup virtual-router default ip 1.1.1.1",
+		"show interface ethernet1/1 | match zone",
 		"exit",
 	}
 
-	restult, err := tc.ExecCmds(initcmd, listCMDs)
+	sshconfig := InsecureClientConfig("admin", "admin", 5*time.Second)
+
+	rhc := CreateRhConfig("192.168.1.1", "tcp", "22")
+
+	restult, err := ExecCommands(rhc, initcmd, listCMDs, sshconfig)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(restult)
-	// Output:
-	// test routing fib-lookup virtual-router default ip 192.168.1.1
+	for _, item := range restult {
+		fmt.Println(item.Cmd)
+		fmt.Println(item.Result)
+	}
+
 }
