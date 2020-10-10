@@ -38,12 +38,8 @@ func Example_execCommandsAdvaned() {
 
 func Example_execCommandsSimple() {
 
-	// List of the commands should be sent to the devices
-	listCMDs := []string{
-		"test routing fib-lookup virtual-router default ip 1.1.1.1",
-		"show interface ethernet1/1 | match zone",
-		"exit",
-	}
+	// List of initial commands that dont need any outputs
+	initcmd := "set cli op-command-xml-output on"
 
 	sshconfig := InsecureClientConfig("admin", "admin", 5*time.Second)
 
