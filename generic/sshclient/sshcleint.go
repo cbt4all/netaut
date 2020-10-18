@@ -68,7 +68,7 @@ func ExecCommandsAdvaned(rhc RhConfig, initcmds, cmds []string, sshconfig *ssh.C
 	// Dial to the remote-host
 	client, err := ssh.Dial(rhc.protocol, rhc.rh+":"+rhc.port, sshconfig)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer client.Close()
 
@@ -180,7 +180,7 @@ func ExecCommandsSimple(rhc RhConfig, cmds []string, sshconfig *ssh.ClientConfig
 	// Dial to the remote-host
 	client, err := ssh.Dial(rhc.protocol, rhc.rh+":"+rhc.port, sshconfig)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 	defer client.Close()
 
