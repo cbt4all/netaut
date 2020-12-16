@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"errors"
 	"io"
-	"log"
 	"net"
 	"os"
 	"strconv"
@@ -13,7 +12,8 @@ import (
 	"github.com/cbt4all/mytoolkits"
 )
 
-// ReadFWRulesFile ...
+// The goal is to read an CSV file and convert it to firewall rules. The assumtion is that the file is in
+// the right format as the function ParseRecords on his package expected. ReadFWRulesFile gets a file patch, reads it and return a slice of FwRule
 func ReadFWRulesFile(fpath string) ([]FwRule, error) {
 
 	var fwrule []FwRule
@@ -46,17 +46,22 @@ func ReadFWRulesFile(fpath string) ([]FwRule, error) {
 			}
 		} else {
 			//------------ Parse CSV recoreds
-			fwrule = append(fwrule, ParseRecords(record, scvFields))
+			pr, err := ParseRecords(record, scvFields)
+			if err != nil {
+				return fwrule, err
+			}
+
+			fwrule = append(fwrule, pr)
 		}
 	}
 	return fwrule, nil
 }
 
-// ParseRecords ...
-func ParseRecords(record []string, csvColumns map[string]int) FwRule {
+// ParseRecords is to parse
+func ParseRecords(record []string, csvColumns map[string]int) (FwRule, error) {
 	var fwrule FwRule
 
-	// Source/Destination IPs are validate laters
+	// Source/Destination IPs are validated laters
 	SrcIPs := strings.Split(record[csvColumns["Sources"]], "\n")
 	DstIPs := strings.Split(record[csvColumns["Destinations"]], "\n")
 
@@ -159,8 +164,10 @@ func ConvertSimpleToFwRule(fws []FwRuleSimple) []FwRule {
 	return fwr
 }
 
-// ValidateIPs ...
-func ValidateIPs(ips []string) []string {
+// The goal is to get a list of IPs and check if all are valid IP addresses. ValidateIPs gets a slice of
+// strings and if all IPs are valid return list of IPs as a slice of string and nil as error. Otherwise, it returns
+// an empty slice and an error
+func ValidateIPs(ips []string) ([]string, error) {
 	var result []string
 
 	for _, item := range ips {
@@ -168,18 +175,18 @@ func ValidateIPs(ips []string) []string {
 		if ip != nil {
 			result = append(result, ip.String())
 		} else {
-			log.Fatal(item + " is not a valid IP")
+			return nil, errors.New(item + " is not a valid IP")
 		}
 	}
-	return result
+	return result, nil
 }
 
 // WriteFwRuleSimpleCSV ...
 func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 
 	// Order of the file:
-	// Sources		Destinations		Protocol		Ports				Applications
-	// SourceInt	DestinationsInt		SourceZone		DestinationsZone	Needed		FirewallIndex
+	// Sources        Destinations        Protocol        Ports                Applications
+	// SourceInt    DestinationsInt        SourceZone        DestinationsZone    Needed        FirewallIndex
 
 	// Open CSV file
 	f, err := os.OpenFile(fpath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
@@ -223,7 +230,7 @@ func WriteFwRuleSimpleCSV(fpath string, fws []FwRuleSimple) error {
 func WriteFwRuleCSV(fpath string, fwr []FwRule) error {
 
 	// Order of the file:
-	// Sources	Destinations	Protocol	Ports	Applications	Needed
+	// Sources    Destinations    Protocol    Ports    Applications    Needed
 
 	// Creating outerr as Output Error.
 	outerr := errors.New("nil")
