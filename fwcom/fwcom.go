@@ -75,18 +75,28 @@ func ParseRecords(record []string, csvColumns map[string]int) (FwRule, error) {
 	record[csvColumns["Ports"]] = strings.ReplaceAll(record[csvColumns["Ports"]], ";", "\n")
 	Ports := strings.Split(record[csvColumns["Ports"]], "\n")
 
-	fwrule.SrcIPs = ValidateIPs(SrcIPs)
-	fwrule.DstIPs = ValidateIPs(DstIPs)
+	srip, err := ValidateIPs(SrcIPs)
+	if err != nil {
+		return fwrule, err
+	}
+	fwrule.SrcIPs = srip
+
+	dsip, err := ValidateIPs(DstIPs)
+	if err != nil {
+		return fwrule, err
+	}
+	fwrule.DstIPs = dsip
+
 	fwrule.Protocol = Protocol
 	fwrule.Ports = Ports
 
 	Application := record[csvColumns["Applications"]]
 	fwrule.Application = Application
 
-	return fwrule
+	return fwrule, nil
 }
 
-// ConvertFwRuleToSimple ...
+// ConvertFwRuleToSimple converts a slice of FwRule to a slice of FwRuleSimple
 func ConvertFwRuleToSimple(fwr []FwRule) []FwRuleSimple {
 	var fws []FwRuleSimple
 
