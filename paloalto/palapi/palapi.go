@@ -98,7 +98,8 @@ func NewPClient(cs *ClientSettings, fip, p string, certSkip bool) (*PClient, err
 	return c, nil
 }
 
-// Dial gets URL and the method used for an HTTP request, then send the request to the server and returns the result
+// Dial gets URL and the Method used for an HTTP request, then send the request to the server and returns the result
+// The Method can be GET, POST, etc. that are used for HTTP requests
 func (c PClient) Dial(url, mthd string) ([]byte, error) {
 
 	method := mthd
