@@ -139,7 +139,7 @@ func (c PClient) Dial(url, mthd string) ([]byte, error) {
 }
 
 // TestRouteFibLookupApi find FIB information for a particular IP on a specific virtual-router. It uses different protocols (REST/XML API) and authentication methods
-// (Key/Token or Basic User/Pass) deponds on what is set for PClient settings. Output will be in XML/Jason format, depends on what protocol is used. This method gets:
+// (Key/Token or Basic User/Pass) based on what is set for PClient settings. Output will be in XML/Jason format, depends on the protocol is used. This method gets:
 // vr is Virtual-Router
 // dip is Destination IP
 func (c PClient) TestRouteFibLookup(vr, dip string) ([]byte, error) {
