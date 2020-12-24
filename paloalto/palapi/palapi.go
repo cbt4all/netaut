@@ -141,21 +141,21 @@ func (c PClient) Dial(url, mthd string) ([]byte, error) {
 // TestRouteFibLookup gets FIB information for a particular IP on a specific virtual-router. It uses different protocols (REST/XML API) and authentication methods
 // (Key/Token or Basic User/Pass) based on what is set for PClient settings. Output will be in XML/Jason format, depends on the protocol is used. This method gets:
 // vr is Virtual-Router
-// dip is Destination IP
+// ip is the IP Address
 // At the moment only XML API us supported by Palo Alto
-func (c PClient) TestRouteFibLookup(vr, dip string) ([]byte, error) {
+func (c PClient) TestRouteFibLookup(vr, ip string) ([]byte, error) {
 
 	switch c.Settings.Api {
 	// To do: testRouteFibLookupRST
 	/*
 		case 0: // REST API
 			{
-				return testRouteFibLookupRST(vr, dip)
+				return ............
 			}
 	*/
 	case 1: // XML API
 		{
-			url, err := c.testRouteFibLookupXML(vr, dip)
+			url, err := c.testRouteFibLookupXML(vr, ip)
 			if err != nil {
 				return nil, err
 			}
@@ -174,34 +174,51 @@ func (c PClient) TestRouteFibLookup(vr, dip string) ([]byte, error) {
 	}
 }
 
-// GetInterfaceFromFIB uses TestRouteFibLookup to get FIB info, then parses the XML response to get only interface name. This method gets:
+// GetInterfaceFromFIB uses TestRouteFibLookup to get FIB info, then parses the XML or Jason (depends on what API is used) response to get only interface name. This method gets:
 // vr is Virtual-Router
-// dip is Destination IP
-func (c PClient) GetInterfaceFromFIB(vr, dip string) (string, error) {
+// ip is the IP Address
+func (c PClient) GetInterfaceFromFIB(vr, ip string) (string, error) {
 
-	// Get FIB info for Source IP
-	result, err := c.TestRouteFibLookup(vr, dip)
+	// Get FIB info for the IP
+	result, err := c.TestRouteFibLookup(vr, ip)
 	if err != nil {
 		return "", err
 	}
 
 	// Parse the output
-	fbr, err := paloalto.ParseXMLFibResult(string(result))
-	if err != nil {
-		return "", err
+	switch c.Settings.Api {
+	// To do:
+	/*
+		case 0: // REST API
+			{
+				return .....
+			}
+	*/
+	case 1: // XML API
+		{
+			fbr, err := paloalto.ParseXMLFibResult(string(result))
+			if err != nil {
+				return "", err
+			}
+
+			return fbr.Result.Interface, nil
+		}
+	default:
+		{
+			return "", errors.New("Wrong type of API is used.")
+		}
 	}
 
-	return fbr.Result.Interface, nil
 }
 
 // testRouteFibLookupXML generates an URL to get firewall FIB information using Palo Alto XML API. This corresponds the command
 // 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI. Output will be in XML format. This method gets:
 // vr is Virtual-Router
-// dip is Destination IP
-func (c PClient) testRouteFibLookupXML(vr, dip string) (url string, err error) {
+// ip is the IP Address
+func (c PClient) testRouteFibLookupXML(vr, ip string) (url string, err error) {
 
 	url = "https://" + c.Fip + "/api/?type=op&cmd=<test><routing><fib-lookup><virtual-router>" + vr + "</virtual-router>"
-	url = url + "<ip>" + dip + "</ip></fib-lookup></routing></test>"
+	url = url + "<ip>" + ip + "</ip></fib-lookup></routing></test>"
 
 	switch c.Settings.Auth {
 	case 0: // Using Key/Token
@@ -223,8 +240,8 @@ func (c PClient) testRouteFibLookupXML(vr, dip string) (url string, err error) {
 // testRouteFibLookupRST generates an URL to get firewall FIB information using Palo Alto REST API. This corresponds the command
 // 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI. Output will be in JSON format. This method gets:
 // vr is Virtual-Router
-// dip is Destination IP
-func (c PClient) testRouteFibLookupRST(vr, dip string) (url string, err error) {
+// ip is the IP Address
+func (c PClient) testRouteFibLookupRST(vr, ip string) (url string, err error) {
 	// To Do
 	// https://192.168.1.249/restapi/v9.1/Network/VirtualRouters
 	return "", nil
@@ -240,7 +257,7 @@ func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 	/*
 		case 0: // REST API
 			{
-				return showInterfaceRST(vr, dip)
+				return ......
 			}
 	*/
 	case 1: // XML API
@@ -264,7 +281,7 @@ func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 	}
 }
 
-// GetZoneFromInt uses ShowInterface to get interface info, then parses the XML response to get only Zone name. This method gets:
+// GetZoneFromInt uses ShowInterface to get interface info, then parses the XML or Jason (depends on what API is used) response to get only Zone name. This method gets:
 // Intrfc is the interface
 func (c PClient) GetZoneFromInt(Intrfc string) (string, error) {
 
@@ -275,11 +292,28 @@ func (c PClient) GetZoneFromInt(Intrfc string) (string, error) {
 	}
 
 	// Parse the output
-	ifnet, err := paloalto.ParseXMLIfNet(string(result))
-	if err != nil {
-		return "", nil
+	switch c.Settings.Api {
+	// To do:
+	/*
+		case 0: // REST API
+			{
+				return .....
+			}
+	*/
+	case 1: // XML API
+		{
+			ifnet, err := paloalto.ParseXMLIfNet(string(result))
+			if err != nil {
+				return "", nil
+			}
+			return ifnet.Result.Ifnet.Zone, nil
+		}
+	default:
+		{
+			return "", errors.New("Wrong type of API is used.")
+		}
 	}
-	return ifnet.Result.Ifnet.Zone, nil
+
 }
 
 // showInterfaceXML generates an URL to get firewall interface information using Palo Alto XML API. This corresponds the command 'show interface <interface>' in CLI.
@@ -313,10 +347,10 @@ func (c PClient) showInterfaceXML(Intrfc string) (url string, err error) {
 // Output will be in JSON format. This method gets:
 // fip is Firewall IP
 // Intrfc is the interface we want
-func (c PClient) showInterfaceRST(fip, vr, dip, key string) ([]byte, error) {
+func (c PClient) showInterfaceRST(Intrfc string) (url string, err error) {
 	// To Do
 	//
-	return nil, nil
+	return "", nil
 }
 
 // TestSecurityPolicyMatch gets firewall policy match for a given config (source, destination, Zones, ports, application).
@@ -336,7 +370,7 @@ func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 	/*
 		case 0: // REST API
 			{
-				return showInterfaceRST(vr, dip)
+				return ....
 			}
 	*/
 	case 1: // XML API
@@ -360,7 +394,7 @@ func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 	}
 }
 
-// GetZoneFromInt uses TestSecurityPolicyMatch to get Test Security Policy Match result, then parses the XML response to get only Action .
+// GetZoneFromInt uses TestSecurityPolicyMatch to get Test Security Policy Match result, then parses the XML or Jason (depends on what API is used) response to get only Action .
 // This method gets cfg that is an 7-cell array in which:
 // cfg[0] is Protocol Number (e.g. 6)
 // cfg[1] is Source Zone
@@ -378,12 +412,28 @@ func (c PClient) GetPolicyMatch(cfg [7]string) (string, error) {
 	}
 
 	// Parse the output
-	plcm, err := paloalto.ParseXMLPolicyMatch(string(result))
-	if err != nil {
-		return "", err
-	}
+	switch c.Settings.Api {
+	// To do:
+	/*
+		case 0: // REST API
+			{
+				return .....
+			}
+	*/
+	case 1: // XML API
+		{
+			plcm, err := paloalto.ParseXMLPolicyMatch(string(result))
+			if err != nil {
+				return "", err
+			}
 
-	return plcm.Result.Rules.Entry.Action, nil
+			return plcm.Result.Rules.Entry.Action, nil
+		}
+	default:
+		{
+			return "", errors.New("Wrong type of API is used.")
+		}
+	}
 }
 
 // testSecurityPolicyMatchXML generates an URL to be used to get firewall interface information. This coresonds corresponds
