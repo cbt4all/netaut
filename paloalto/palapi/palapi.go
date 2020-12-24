@@ -353,12 +353,12 @@ func (c PClient) showInterfaceRST(Intrfc string) (url string, err error) {
 	return "", nil
 }
 
-/*
-TestSecurityPolicyMatch gets firewall policy match for a given config (source, destination, Zones, ports, application).
+/*TestSecurityPolicyMatch gets firewall policy match for a given config (source, destination, Zones, ports, application).
 It uses different protocols (REST/XML API) and authentication methods (Key/Token or Basic User/Pass) based on what is set for PClient settings.
 Output will be in XML/Jason format, depends on the protocol is used.
 
 This method gets cfg that is an 7-cell array in which:
+
 	cfg[1] is Source Zone
 	cfg[2] is Destination Zone
 	cfg[3] is Source IP
