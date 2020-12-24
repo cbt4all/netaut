@@ -27,9 +27,9 @@ type ClientSettings struct {
 NewClientSettings takes all parameters needed and returns a new ClientSettings.
 
 This method gets:
-	api: The API should be used (0 means REST API and 1 means XML API)
+	api:  The API should be used (0 means REST API and 1 means XML API)
 	auth: Authentication method (0 means Key/Token and 1 = User/Pass)
-	key: Token/Key should be takan manually from firewall
+	key:  Token/Key should be takan manually from firewall
 	user: If not using Token/Key to login to firewall need to use username and password
 	pass: If not using Token/Key to login to firewall need to use username and password
 */
@@ -82,7 +82,15 @@ type PClient struct {
 	SkipCertVerify bool
 }
 
-// NewPClient takes all parameters needed and returns a new PClient
+/*
+NewPClient takes all parameters needed and returns a new PClient
+
+This method gets:
+	cs:	      A ClientSettings
+	fip:      Firewall IP Address
+	p:        TCP Port is used to login to the firewall. By default is 443
+	certSkip: Means HTTPs certificate verfication be skipped or not. If true, means HTTPs certificate verfication be skipped
+*/
 func NewPClient(cs *ClientSettings, fip, p string, certSkip bool) (*PClient, error) {
 
 	c := new(PClient)
@@ -107,8 +115,15 @@ func NewPClient(cs *ClientSettings, fip, p string, certSkip bool) (*PClient, err
 	return c, nil
 }
 
-// Dial gets URL and the Method used for an HTTP request, then send the request to the server and returns the result
-// The Method can be GET, POST, etc. that are used for HTTP requests
+/*
+Dial gets URL and the Method used for an HTTP request, then send the request to the server and returns the result
+The Method can be GET, POST, etc. that are used for HTTP requests
+
+This method gets:
+	url:  The URL that HTTP request is sent to
+	mthd: The Method that HTTP request is used. Example: GET, POST, etc.
+
+*/
 func (c PClient) Dial(url, mthd string) ([]byte, error) {
 
 	method := mthd
