@@ -372,8 +372,6 @@ func (c PClient) showInterfaceRST(Intrfc string) (url string, err error) {
 // cfg[5] is Destination Port
 //
 // cfg[6] is Application
-//
-
 func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 
 	switch c.Settings.Api {
