@@ -71,7 +71,7 @@ type PClient struct {
 	// ClientSettings helps us to add settings on some function we are using.
 	Settings *ClientSettings
 
-	// Fip is Firewall IP that the PClient should connect to
+	// Fip is Firewall IP Address that the PClient should connect to
 	Fip string
 
 	// If custome port should be used while connecting to firewall
@@ -86,7 +86,7 @@ type PClient struct {
 NewPClient takes all parameters needed and returns a new PClient
 
 This method gets:
-	cs:	      A ClientSettings
+	cs:       A ClientSettings
 	fip:      Firewall IP Address
 	p:        TCP Port is used to login to the firewall. By default is 443
 	certSkip: Means HTTPs certificate verfication be skipped or not. If true, means HTTPs certificate verfication be skipped
@@ -97,7 +97,7 @@ func NewPClient(cs *ClientSettings, fip, p string, certSkip bool) (*PClient, err
 
 	c.Settings = cs
 
-	// Fip is Firewall IP that the PClient should connect to
+	// fip is Firewall IP Address that the PClient should connect to
 	if net.ParseIP(fip) == nil {
 		return nil, errors.New("Entered Fip, " + fip + " is not a valid IP.")
 	}
@@ -122,7 +122,6 @@ The Method can be GET, POST, etc. that are used for HTTP requests
 This method gets:
 	url:  The URL that HTTP request is sent to
 	mthd: The Method that HTTP request is used. Example: GET, POST, etc.
-
 */
 func (c PClient) Dial(url, mthd string) ([]byte, error) {
 
@@ -162,11 +161,14 @@ func (c PClient) Dial(url, mthd string) ([]byte, error) {
 	return body, nil
 }
 
-// TestRouteFibLookup gets FIB information for a particular IP on a specific virtual-router. It uses different protocols (REST/XML API) and authentication methods
-// (Key/Token or Basic User/Pass) based on what is set for PClient settings. Output will be in XML/Jason format, depends on the protocol is used. This method gets:
-// vr is Virtual-Router
-// ip is the IP Address
-// At the moment only XML API us supported by Palo Alto
+/*
+TestRouteFibLookup gets FIB information for a particular IP on a specific virtual-router. It uses different protocols (REST/XML API) and authentication methods
+(Key/Token or Basic User/Pass) based on what is set for PClient settings. Output will be in XML/Jason format, depends on the protocol is used. At the moment only XML API us supported by Palo Alto.
+
+This method gets:
+	vr is Virtual-Router
+	ip is the IP Address
+*/
 func (c PClient) TestRouteFibLookup(vr, ip string) ([]byte, error) {
 
 	switch c.Settings.Api {
@@ -198,9 +200,13 @@ func (c PClient) TestRouteFibLookup(vr, ip string) ([]byte, error) {
 	}
 }
 
-// GetInterfaceFromFIB uses TestRouteFibLookup to get FIB info, then parses the XML or Jason (depends on what API is used) response to get only interface name. This method gets:
-// vr is Virtual-Router
-// ip is the IP Address
+/*
+GetInterfaceFromFIB uses TestRouteFibLookup to get FIB info, then parses the XML or Jason (depends on what API is used) response to get only Interface Name field of that.
+
+This method gets:
+	vr is Virtual-Router
+	ip is the IP Address
+*/
 func (c PClient) GetInterfaceFromFIB(vr, ip string) (string, error) {
 
 	// Get FIB info for the IP
@@ -235,10 +241,14 @@ func (c PClient) GetInterfaceFromFIB(vr, ip string) (string, error) {
 
 }
 
-// testRouteFibLookupXML generates an URL to get firewall FIB information using Palo Alto XML API. This corresponds the command
-// 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI. Output will be in XML format. This method gets:
-// vr is Virtual-Router
-// ip is the IP Address
+/*
+testRouteFibLookupXML generates an URL to get firewall FIB information using Palo Alto XML API. This corresponds the command
+'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI. Output will be in XML format.
+
+This method gets:
+	vr is Virtual-Router
+	ip is the IP Address
+*/
 func (c PClient) testRouteFibLookupXML(vr, ip string) (url string, err error) {
 
 	url = "https://" + c.Fip + "/api/?type=op&cmd=<test><routing><fib-lookup><virtual-router>" + vr + "</virtual-router>"
@@ -261,19 +271,27 @@ func (c PClient) testRouteFibLookupXML(vr, ip string) (url string, err error) {
 	}
 }
 
-// testRouteFibLookupRST generates an URL to get firewall FIB information using Palo Alto REST API. This corresponds the command
-// 'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI. Output will be in JSON format. This method gets:
-// vr is Virtual-Router
-// ip is the IP Address
+/*
+testRouteFibLookupRST generates an URL to get firewall FIB information using Palo Alto REST API. This corresponds the command
+'test routing fib-lookup virtual-router <virtual-router> ip <ip-address>' in CLI. Output will be in JSON format.
+
+This method gets:
+	vr is Virtual-Router
+	ip is the IP Address
+*/
 func (c PClient) testRouteFibLookupRST(vr, ip string) (url string, err error) {
 	// To Do
 	// https://192.168.1.249/restapi/v9.1/Network/VirtualRouters
 	return "", nil
 }
 
-// ShowInterface gets firewall interface information for a given interface. It uses different protocols (REST/XML API) and authentication methods
-// (Key/Token or Basic User/Pass) based on what is set for PClient settings. Output will be in XML/Jason format, depends on the protocol is used. This method gets:
-// Intrfc is the interface
+/*
+ShowInterface gets firewall interface information for a given interface. It uses different protocols (REST/XML API) and authentication methods
+(Key/Token or Basic User/Pass) based on what is set for PClient settings. Output will be in XML/Jason format, depends on the protocol is used.
+
+This method gets:
+	Intrfc is the Firewall Interface
+*/
 func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 
 	switch c.Settings.Api {
@@ -305,8 +323,12 @@ func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 	}
 }
 
-// GetZoneFromInt uses ShowInterface to get interface info, then parses the XML or Jason (depends on what API is used) response to get only Zone name. This method gets:
-// Intrfc is the interface
+/*
+GetZoneFromInt uses ShowInterface to get interface info, then parses the XML or Jason (depends on what API is used) response to get only Zone Name field of that.
+
+This method gets:
+	Intrfc is the Firewall Interface
+*/
 func (c PClient) GetZoneFromInt(Intrfc string) (string, error) {
 
 	// Get Source Zone Info info
@@ -340,10 +362,14 @@ func (c PClient) GetZoneFromInt(Intrfc string) (string, error) {
 
 }
 
-// showInterfaceXML generates an URL to get firewall interface information using Palo Alto XML API. This corresponds the command 'show interface <interface>' in CLI.
-// Output will be in XML format. This method gets:
-// fip is Firewall IP
-// Intrfc is the interface we want
+/*
+showInterfaceXML generates an URL to get firewall interface information using Palo Alto XML API. This corresponds the command 'show interface <interface>' in CLI.
+Output will be in XML format.
+
+This method gets:
+	fip is Firewall IP Address
+	Intrfc is the Firewall Interface
+*/
 func (c PClient) showInterfaceXML(Intrfc string) (url string, err error) {
 
 	url = "https://" + c.Fip + "/api/?type=op&cmd=<show><interface>" + Intrfc
@@ -367,10 +393,14 @@ func (c PClient) showInterfaceXML(Intrfc string) (url string, err error) {
 	}
 }
 
-// showInterfaceRST generates an URL to get firewall interface information using Palo Alto REST API. This corresponds the command 'show interface <interface>' in CLI.
-// Output will be in JSON format. This method gets:
-// fip is Firewall IP
-// Intrfc is the interface we want
+/*
+showInterfaceRST generates an URL to get firewall interface information using Palo Alto REST API. This corresponds the command 'show interface <interface>' in CLI.
+Output will be in JSON format.
+
+This method gets:
+	fip is Firewall IP Address
+	Intrfc is the Firewall Interface
+*/
 func (c PClient) showInterfaceRST(Intrfc string) (url string, err error) {
 	// To Do
 	//
@@ -422,15 +452,18 @@ func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 	}
 }
 
-// GetZoneFromInt uses TestSecurityPolicyMatch to get Test Security Policy Match result, then parses the XML or Jason (depends on what API is used) response to get only Action .
-// This method gets cfg that is an 7-cell array in which:
-// cfg[0] is Protocol Number (e.g. 6)
-// cfg[1] is Source Zone
-// cfg[2] is Destination Zone
-// cfg[3] is Source IP
-// cfg[4] is Destination IP
-// cfg[5] is Destination Port
-// cfg[6] is Application
+/*
+GetZoneFromInt uses TestSecurityPolicyMatch to get Test Security Policy Match result, then parses the XML or Jason (depends on what API is used) response to get only Action field of that.
+
+This method gets cfg that is an 7-cell array in which:
+	cfg[0] is Protocol Number (e.g. 6)
+	cfg[1] is Source Zone
+	cfg[2] is Destination Zone
+	cfg[3] is Source IP
+	cfg[4] is Destination IP
+	cfg[5] is Destination Port
+	cfg[6] is Application
+*/
 func (c PClient) GetPolicyMatch(cfg [7]string) (string, error) {
 
 	// Get Test Security Policy Match result
@@ -464,17 +497,21 @@ func (c PClient) GetPolicyMatch(cfg [7]string) (string, error) {
 	}
 }
 
-// testSecurityPolicyMatchXML generates an URL to be used to get firewall interface information. This coresonds corresponds
-// the command 'test security-policy-match protocol <protocol> from <source-zone> to <destination-zone> source <source-ip-address>
-// destination <destination-ip-address> destination-port <destination-port> application <application-name>' in CLI but here is used on firewall XML API.
-// Output will be in XML format. This method gets cfg is an 7-cell array in which we put these:
-// cfg[0] is Protocol Number (e.g. 6)
-// cfg[1] is Source Zone
-// cfg[2] is Destination Zone
-// cfg[3] is Source IP
-// cfg[4] is Destination IP
-// cfg[5] is Destination Port
-// cfg[6] is Application
+/*
+testSecurityPolicyMatchXML generates an URL to be used to get firewall interface information. This coresonds corresponds
+the command 'test security-policy-match protocol <protocol> from <source-zone> to <destination-zone> source <source-ip-address>
+destination <destination-ip-address> destination-port <destination-port> application <application-name>' in CLI but here is used on firewall XML API.
+Output will be in XML format.
+
+This method gets cfg that is an 7-cell array in which:
+	cfg[0] is Protocol Number (e.g. 6)
+	cfg[1] is Source Zone
+	cfg[2] is Destination Zone
+	cfg[3] is Source IP
+	cfg[4] is Destination IP
+	cfg[5] is Destination Port
+	cfg[6] is Application
+*/
 func (c PClient) testSecurityPolicyMatchXML(cfg [7]string) (url string, err error) {
 
 	if cfg[0] == "" {
@@ -526,17 +563,21 @@ func (c PClient) testSecurityPolicyMatchXML(cfg [7]string) (url string, err erro
 	}
 }
 
-// testSecurityPolicyMatchXML generates an URL to be used to get firewall interface information. This coresonds corresponds
-// the command 'test security-policy-match protocol <protocol> from <source-zone> to <destination-zone> source <source-ip-address>
-// destination <destination-ip-address> destination-port <destination-port> application <application-name>' in CLI but here is used on firewall REST API.
-// Output will be in JSON format. This method gets cfg is an 7-cell array in which we put these:
-// cfg[0] is Protocol Number (e.g. 6)
-// cfg[1] is Source Zone
-// cfg[2] is Destination Zone
-// cfg[3] is Source IP
-// cfg[4] is Destination IP
-// cfg[5] is Destination Port
-// cfg[6] is Application
+/*
+testSecurityPolicyMatchXML generates an URL to be used to get firewall interface information. This coresonds corresponds
+the command 'test security-policy-match protocol <protocol> from <source-zone> to <destination-zone> source <source-ip-address>
+destination <destination-ip-address> destination-port <destination-port> application <application-name>' in CLI but here is used on firewall REST API.
+Output will be in JSON format.
+
+This method gets cfg that is an 7-cell array in which:
+	cfg[0] is Protocol Number (e.g. 6)
+	cfg[1] is Source Zone
+	cfg[2] is Destination Zone
+	cfg[3] is Source IP
+	cfg[4] is Destination IP
+	cfg[5] is Destination Port
+	cfg[6] is Application
+*/
 func (c PClient) testSecurityPolicyMatchRST(fip string, cfg [7]string, key string) ([]byte, error) {
 	// To Do
 	//
