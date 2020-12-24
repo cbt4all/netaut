@@ -2,7 +2,7 @@ package paloalto
 
 import "encoding/xml"
 
-// IfNetResult ....
+// IfNetResult is the outcome of the command 'show interface ...' in XML format
 type IfNetResult struct {
 	XMLName xml.Name `xml:"response"`
 	Text    string   `xml:",chardata"`
@@ -120,7 +120,7 @@ type IfNetResult struct {
 	} `xml:"result"`
 }
 
-// FibResult ...
+// FibResult is the outcome of the command 'test routing fib-lookup virtual-router ...' in XML format
 type FibResult struct {
 	XMLName xml.Name `xml:"response"`
 	Text    string   `xml:",chardata"`
@@ -134,7 +134,7 @@ type FibResult struct {
 	} `xml:"result"`
 }
 
-// PolicyMatchResult ...
+// PolicyMatchResult is the outcome of the command 'test security-policy-match ...' in XML format
 type PolicyMatchResult struct {
 	XMLName xml.Name `xml:"response"`
 	Text    string   `xml:",chardata"`
