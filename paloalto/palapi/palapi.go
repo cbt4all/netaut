@@ -414,10 +414,10 @@ Output will be in XML/Jason format, depends on the protocol is used.
 
 This method gets cfg that is an 7-cell array in which:
 
+	cfg[0] is Protocol Number (e.g. 6 means TCP)
 	cfg[1] is Source Zone
 	cfg[2] is Destination Zone
 	cfg[3] is Source IP
-	cfg[0] is Protocol Number (e.g. 6)
 	cfg[4] is Destination IP
 	cfg[5] is Destination Port
 	cfg[6] is Application*/
@@ -456,7 +456,7 @@ func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 GetZoneFromInt uses TestSecurityPolicyMatch to get Test Security Policy Match result, then parses the XML or Jason (depends on what API is used) response to get only Action field of that.
 
 This method gets cfg that is an 7-cell array in which:
-	cfg[0] is Protocol Number (e.g. 6)
+	cfg[0] is Protocol Number (e.g. 6 means TCP)
 	cfg[1] is Source Zone
 	cfg[2] is Destination Zone
 	cfg[3] is Source IP
@@ -504,7 +504,7 @@ destination <destination-ip-address> destination-port <destination-port> applica
 Output will be in XML format.
 
 This method gets cfg that is an 7-cell array in which:
-	cfg[0] is Protocol Number (e.g. 6)
+	cfg[0] is Protocol Number (e.g. 6 means TCP)
 	cfg[1] is Source Zone
 	cfg[2] is Destination Zone
 	cfg[3] is Source IP
@@ -570,7 +570,7 @@ destination <destination-ip-address> destination-port <destination-port> applica
 Output will be in JSON format.
 
 This method gets cfg that is an 7-cell array in which:
-	cfg[0] is Protocol Number (e.g. 6)
+	cfg[0] is Protocol Number (e.g. 6 means TCP)
 	cfg[1] is Source Zone
 	cfg[2] is Destination Zone
 	cfg[3] is Source IP
