@@ -359,7 +359,6 @@ It uses different protocols (REST/XML API) and authentication methods (Key/Token
 Output will be in XML/Jason format, depends on the protocol is used.
 
 This method gets cfg that is an 7-cell array in which:
-
 	cfg[1] is Source Zone
 	cfg[2] is Destination Zone
 	cfg[3] is Source IP
