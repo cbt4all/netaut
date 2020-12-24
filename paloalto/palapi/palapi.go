@@ -353,25 +353,23 @@ func (c PClient) showInterfaceRST(Intrfc string) (url string, err error) {
 	return "", nil
 }
 
-// TestSecurityPolicyMatch gets firewall policy match for a given config (source, destination, Zones, ports, application).
-// It uses different protocols (REST/XML API) and authentication methods (Key/Token or Basic User/Pass) based on what is set for PClient settings.
-// Output will be in XML/Jason format, depends on the protocol is used.
-
 /*
+TestSecurityPolicyMatch gets firewall policy match for a given config (source, destination, Zones, ports, application).
+It uses different protocols (REST/XML API) and authentication methods (Key/Token or Basic User/Pass) based on what is set for PClient settings.
+Output will be in XML/Jason format, depends on the protocol is used.
 
 	struct { A, B int }	// the same
 	cfg[1] // is Source Zone
 
-*/
 
-// This method gets cfg that is an 7-cell array in which:
-// cfg[1] is Source Zone
-// cfg[2] is Destination Zone
-// cfg[3] is Source IP
-// cfg[0] is Protocol Number (e.g. 6)
-// cfg[4] is Destination IP
-// cfg[5] is Destination Port
-// cfg[6] is Application
+This method gets cfg that is an 7-cell array in which:
+cfg[1] is Source Zone
+cfg[2] is Destination Zone
+cfg[3] is Source IP
+cfg[0] is Protocol Number (e.g. 6)
+cfg[4] is Destination IP
+cfg[5] is Destination Port
+cfg[6] is Application*/
 func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 
 	switch c.Settings.Api {
