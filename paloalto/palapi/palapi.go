@@ -23,7 +23,16 @@ type ClientSettings struct {
 	Password string // If not using Token/Key to login to firewall need to use username and password
 }
 
-// NewClientSettings takes all parameters needed and returns a new ClientSettings
+/*
+NewClientSettings takes all parameters needed and returns a new ClientSettings.
+
+This method gets:
+	api: The API should be used (0 means REST API and 1 means XML API)
+	auth: Authentication method (0 means Key/Token and 1 = User/Pass)
+	key: Token/Key should be takan manually from firewall
+	user: If not using Token/Key to login to firewall need to use username and password
+	pass: If not using Token/Key to login to firewall need to use username and password
+*/
 func NewClientSettings(api, auth int, key, user, pass string) (*ClientSettings, error) {
 
 	// Create a new ClientSettings
@@ -353,7 +362,8 @@ func (c PClient) showInterfaceRST(Intrfc string) (url string, err error) {
 	return "", nil
 }
 
-/*TestSecurityPolicyMatch gets firewall policy match for a given config (source, destination, Zones, ports, application).
+/*
+TestSecurityPolicyMatch gets firewall policy match for a given config (source, destination, Zones, ports, application).
 It uses different protocols (REST/XML API) and authentication methods (Key/Token or Basic User/Pass) based on what is set for PClient settings.
 Output will be in XML/Jason format, depends on the protocol is used.
 
