@@ -3,6 +3,7 @@ package palapi
 import (
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -51,7 +52,6 @@ func NewClientSettings(api, auth int, key, user, pass string) (*ClientSettings, 
 			}
 			cs.Key = key
 		}
-
 	case 1: // Using Basic User/Pass
 		{
 			if user == "" || pass == "" {
@@ -61,7 +61,6 @@ func NewClientSettings(api, auth int, key, user, pass string) (*ClientSettings, 
 			cs.Password = pass
 		}
 	}
-
 	return cs, nil
 }
 
@@ -176,17 +175,18 @@ func (c PClient) TestRouteFibLookup(vr, ip string) ([]byte, error) {
 
 	switch c.Settings.Api {
 	// To do: testRouteFibLookupRST
-	/*
-		case 0: // REST API
-			{
-				return ............
-			}
-	*/
+
+	case 0: // REST API
+		{
+			return nil, errors.New("Wrong type of API is used.")
+		}
+
 	case 1: // XML API
 		{
 			url, err := c.testRouteFibLookupXML(vr, ip)
 			// Just fill c.Url to be used later if needed
 			c.Url = url
+			fmt.Println(c.Url)
 			if err != nil {
 				return nil, err
 			}
@@ -223,19 +223,16 @@ func (c PClient) GetInterfaceFromFIB(vr, ip string) (string, error) {
 	// Parse the output
 	switch c.Settings.Api {
 	// To do:
-	/*
-		case 0: // REST API
-			{
-				return .....
-			}
-	*/
+	case 0: // REST API
+		{
+			return "", errors.New("Wrong type of API is used.")
+		}
 	case 1: // XML API
 		{
 			fbr, err := paloalto.ParseXMLFibResult(string(result))
 			if err != nil {
 				return "", err
 			}
-
 			return fbr.Result.Interface, nil
 		}
 	default:
@@ -301,12 +298,10 @@ func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 
 	switch c.Settings.Api {
 	// To do: testRouteFibLookupRST
-	/*
-		case 0: // REST API
-			{
-				return ......
-			}
-	*/
+	case 0: // REST API
+		{
+			return nil, errors.New("Wrong type of API is used.")
+		}
 	case 1: // XML API
 		{
 			url, err := c.showInterfaceXML(Intrfc)
@@ -320,7 +315,6 @@ func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 			if err != nil {
 				return nil, err
 			}
-
 			return b, nil
 		}
 	default:
@@ -347,12 +341,10 @@ func (c PClient) GetZoneFromInt(Intrfc string) (string, error) {
 	// Parse the output
 	switch c.Settings.Api {
 	// To do:
-	/*
-		case 0: // REST API
-			{
-				return .....
-			}
-	*/
+	case 0: // REST API
+		{
+			return "", errors.New("Wrong type of API is used.")
+		}
 	case 1: // XML API
 		{
 			ifnet, err := paloalto.ParseXMLIfNet(string(result))
@@ -366,7 +358,6 @@ func (c PClient) GetZoneFromInt(Intrfc string) (string, error) {
 			return "", errors.New("Wrong type of API is used.")
 		}
 	}
-
 }
 
 /*
@@ -383,7 +374,6 @@ func (c PClient) showInterfaceXML(Intrfc string) (url string, err error) {
 	url = url + "</interface></show>"
 
 	switch c.Settings.Auth {
-
 	case 0: // Using Key/Token
 		{
 			url = url + "&key=" + c.Settings.Key
@@ -432,12 +422,10 @@ func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 
 	switch c.Settings.Api {
 	// To do: testRouteFibLookupRST
-	/*
-		case 0: // REST API
-			{
-				return ....
-			}
-	*/
+	case 0: // REST API
+		{
+			return nil, errors.New("Wrong type of API is used.")
+		}
 	case 1: // XML API
 		{
 			url, err := c.testSecurityPolicyMatchXML(cfg)
@@ -451,7 +439,6 @@ func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 			if err != nil {
 				return nil, err
 			}
-
 			return b, nil
 		}
 	default:
@@ -484,19 +471,16 @@ func (c PClient) GetPolicyMatch(cfg [7]string) (string, error) {
 	// Parse the output
 	switch c.Settings.Api {
 	// To do:
-	/*
-		case 0: // REST API
-			{
-				return .....
-			}
-	*/
+	case 0: // REST API
+		{
+			return "", errors.New("Wrong type of API is used.")
+		}
 	case 1: // XML API
 		{
 			plcm, err := paloalto.ParseXMLPolicyMatch(string(result))
 			if err != nil {
 				return "", err
 			}
-
 			return plcm.Result.Rules.Entry.Action, nil
 		}
 	default:
