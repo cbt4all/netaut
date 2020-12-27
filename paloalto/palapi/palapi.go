@@ -257,7 +257,7 @@ func (c PClient) testRouteFibLookupXML(vr, ip string) (url string, err error) {
 	switch c.Settings.Auth {
 	case 0: // Using Key/Token
 		{
-			url = "&key=" + c.Settings.Key
+			url += "&key=" + c.Settings.Key
 			return url, nil
 		}
 	case 1: // Using Basic User/Pass
