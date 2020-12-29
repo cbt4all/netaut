@@ -30,7 +30,7 @@ func Example_getInterfaceFromFIB() {
 	// ethernet1/1
 }
 
-func ExampleGetInterfaceFromFIB() {
+func ExamplePClient_GetInterfaceFromFIB() {
 	// Create a new ClientSettings
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
 	if err != nil {
