@@ -3,11 +3,8 @@ package palapi
 import (
 	"fmt"
 	"log"
-
-	"github.com/cbt4all/netaut/paloalto/palapi"
 )
 
-/*
 func Example_getInterfaceFromFIB() {
 
 	// Create a new ClientSettings
@@ -32,17 +29,16 @@ func Example_getInterfaceFromFIB() {
 	// Output:
 	// ethernet1/1
 }
-*/
-func ExampleGetInterfaceFromFIB() {
 
+func ExampleGetInterfaceFromFIB() {
 	// Create a new ClientSettings
-	cs, err := palapi.NewClientSettings(1, 1, "", "admin", "admin")
+	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Create a new Palo Alto Client..............................
-	c, err := palapi.NewPClient(cs, "192.168.1.249", "", true)
+	c, err := NewPClient(cs, "192.168.1.249", "", true)
 	if err != nil {
 		log.Fatal(err)
 	}
