@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func ExampleGetInterfaceFromFIB() {
+func Example_GetInterfaceFromFIB() {
 
 	// Create a new ClientSettings
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
@@ -13,13 +13,13 @@ func ExampleGetInterfaceFromFIB() {
 		log.Fatal(err)
 	}
 
-	// Create a new Palo Alto Client
+	// Create a new Palo Alto Client..............................
 	c, err := NewPClient(cs, "192.168.1.249", "", true)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Get FIB info for IP 1.1.1.1 on the Virtual Router 'default'
+	// Get FIB info for IP 1.1.1.1 on the Virtual Router 'default'......................
 	b, err := c.GetInterfaceFromFIB("default", "1.1.1.1")
 	if err != nil {
 		log.Fatal(err)
