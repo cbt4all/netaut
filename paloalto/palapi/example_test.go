@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+/*
 func Example_getInterfaceFromFIB() {
 
 	// Create a new ClientSettings
@@ -29,7 +30,7 @@ func Example_getInterfaceFromFIB() {
 	// Output:
 	// ethernet1/1
 }
-
+*/
 func (c PClient) ExampleGetInterfaceFromFIB() {
 	// ......................
 	// Create a new ClientSettings
