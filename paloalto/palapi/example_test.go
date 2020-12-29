@@ -31,6 +31,7 @@ func Example_getInterfaceFromFIB() {
 }
 
 func ExampleGetInterfaceFromFIB() {
+	//ExampleGetInterfaceFromFIB
 
 	// Create a new ClientSettings
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
