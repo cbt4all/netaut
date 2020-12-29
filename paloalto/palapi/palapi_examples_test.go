@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func Example_GetInterfaceFromFIB() {
+func ExampleGetInterfaceFromFIB() {
 
 	// Create a new ClientSettings
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
