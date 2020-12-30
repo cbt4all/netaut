@@ -56,14 +56,13 @@ func ExamplePClient_TestRouteFibLookup() {
 
 	fmt.Println(string(b))
 	// Output:
-	/*
-		<response status="success"><result>
-			<nh>ip</nh>
-			<interface>ethernet1/1</interface>
-			<dp>dp0</dp>
-			<src>1.1.1.253</src>
-		/result></response>
-	*/
+	//
+	//<response status="success"><result>
+	//	<nh>ip</nh>
+	//	<interface>ethernet1/1</interface>
+	//	<dp>dp0</dp>
+	//	<src>1.1.1.253</src>
+	//<result></response>
 }
 
 func ExamplePClient_GetZoneFromInt() {
