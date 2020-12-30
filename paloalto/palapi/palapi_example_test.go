@@ -66,9 +66,34 @@ func ExamplePClient_TestRouteFibLookup() {
 	*/
 }
 
-func Example_getZoneFromInt() {
+func ExamplePClient_GetZoneFromInt() {
 
-	// Create a new ClientSettings
+	// Create a new ClientSettings using Username/Password
+	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create a new Palo Alto Client
+	c, err := NewPClient(cs, "192.168.1.249", "", true)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get information of the interface ethernet1/1
+	b, err := c.GetZoneFromInt("ethernet1/1")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(b))
+	// Output:
+	// ZONE1
+}
+
+func ExamplePClient_ShowInterface() {
+
+	// Create a new ClientSettings using Username/Password
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
 	if err != nil {
 		log.Fatal(err)
@@ -89,32 +114,9 @@ func Example_getZoneFromInt() {
 	fmt.Println(string(b))
 }
 
-func Example_showInterface() {
+func ExamplePClient_GetPolicyMatch() {
 
-	// Create a new ClientSettings
-	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Create a new Palo Alto Client
-	c, err := NewPClient(cs, "192.168.1.249", "", true)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Get information of the interface ethernet1/1
-	b, err := c.ShowInterface("ethernet1/1")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(string(b))
-}
-
-func Example_getPolicyMatch() {
-
-	// Create a new ClientSettings
+	// Create a new ClientSettings using Username/Password
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
 	if err != nil {
 		log.Fatal(err)
@@ -146,9 +148,9 @@ func Example_getPolicyMatch() {
 	// "deny"
 }
 
-func Example_testSecurityPolicyMatch() {
+func ExamplePClient_TestSecurityPolicyMatch() {
 
-	// Create a new ClientSettings
+	// Create a new ClientSettings using Username/Password
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
 	if err != nil {
 		log.Fatal(err)
