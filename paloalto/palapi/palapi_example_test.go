@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func ExamplePClient_GetInterfaceFromFIB() {
+func Example_GetInterfaceFromFIB() {
 
 	// Create a new ClientSettings using Username/Password
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
@@ -30,10 +30,14 @@ func ExamplePClient_GetInterfaceFromFIB() {
 	// ethernet1/1
 }
 
-func Example_testRouteFibLookup() {
+func Example_TestRouteFibLookup() {
 
-	// Create a new ClientSettings
-	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
+	// This example uses Key to login to Palo Alto
+	// Use this link to find how to get the Key: https://docs.paloaltonetworks.com/content/techdocs/en_US/pan-os/9-0/pan-os-panorama-api.html
+	key := "LUFRPT1GdWNLZzdXM2svZ1JZTVNreXdGRU1xRktrNnc9T3RxUGZDVkQrNDNVdXV1K3F3L2gvTWZZNFdqdXNIQjlkUDBTSWtWazl6anhLQmVZT3lzaUdCVWEvRGs1UTQydA=="
+
+	// Create a new ClientSettings Using Token/Key
+	cs, err := NewClientSettings(1, 0, key, "", "")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,6 +55,15 @@ func Example_testRouteFibLookup() {
 	}
 
 	fmt.Println(string(b))
+	// Output:
+	/*
+		<response status="success"><result>
+			<nh>ip</nh>
+			<interface>ethernet1/1</interface>
+			<dp>dp0</dp>
+			<src>1.1.1.253</src>
+		/result></response>
+	*/
 }
 
 func Example_getZoneFromInt() {
