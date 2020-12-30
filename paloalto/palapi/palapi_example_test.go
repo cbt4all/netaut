@@ -7,7 +7,7 @@ import (
 
 func ExamplePClient_getInterfaceFromFIB() {
 
-	// Create a new ClientSettings using username/password
+	// Create a new ClientSettings using Username/Password
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
 	if err != nil {
 		log.Fatal(err)
