@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func Example_GetInterfaceFromFIB() {
+func ExamplePClient_GetInterfaceFromFIB() {
 
 	// Create a new ClientSettings using Username/Password
 	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
@@ -30,7 +30,7 @@ func Example_GetInterfaceFromFIB() {
 	// ethernet1/1
 }
 
-func Example_TestRouteFibLookup() {
+func ExamplePClient_TestRouteFibLookup() {
 
 	// This example uses Key to login to Palo Alto
 	// Use this link to find how to get the Key: https://docs.paloaltonetworks.com/content/techdocs/en_US/pan-os/9-0/pan-os-panorama-api.html
