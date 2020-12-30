@@ -113,6 +113,9 @@ func NewPClient(cs *ClientSettings, fip, p string, certSkip bool) (*PClient, err
 	// certSkip means HTTPs certificate verfication be skipped or not
 	c.SkipCertVerify = certSkip
 
+	// URL
+	c.Url = ""
+
 	return c, nil
 }
 
@@ -124,7 +127,7 @@ This method gets:
     url:  The URL that HTTP request is sent to
     mthd: The Method that HTTP request is used. Example: GET, POST, etc.
 */
-func (c PClient) Dial(url, mthd string) ([]byte, error) {
+func (c *PClient) Dial(url, mthd string) ([]byte, error) {
 
 	method := mthd
 
@@ -170,7 +173,7 @@ This method gets:
     vr is Virtual-Router
     ip is the IP Address
 */
-func (c PClient) TestRouteFibLookup(vr, ip string) ([]byte, error) {
+func (c *PClient) TestRouteFibLookup(vr, ip string) ([]byte, error) {
 
 	switch c.Settings.Api {
 	// To do: testRouteFibLookupRST
@@ -186,6 +189,9 @@ func (c PClient) TestRouteFibLookup(vr, ip string) ([]byte, error) {
 			if err != nil {
 				return nil, err
 			}
+
+			// Filling PClient.Url
+			c.Url = url
 
 			b, err := c.Dial(url, "GET")
 			if err != nil {
@@ -208,7 +214,7 @@ This method gets:
     vr is Virtual-Router
     ip is the IP Address
 */
-func (c PClient) GetInterfaceFromFIB(vr, ip string) (string, error) {
+func (c *PClient) GetInterfaceFromFIB(vr, ip string) (string, error) {
 
 	// Get FIB info for the IP
 	result, err := c.TestRouteFibLookup(vr, ip)
@@ -247,7 +253,7 @@ This method gets:
     vr is Virtual-Router
     ip is the IP Address
 */
-func (c PClient) testRouteFibLookupXML(vr, ip string) (url string, err error) {
+func (c *PClient) testRouteFibLookupXML(vr, ip string) (url string, err error) {
 
 	url = "https://" + c.Fip + "/api/?type=op&cmd=<test><routing><fib-lookup><virtual-router>" + vr + "</virtual-router>"
 	url = url + "<ip>" + ip + "</ip></fib-lookup></routing></test>"
@@ -277,7 +283,7 @@ This method gets:
     vr is Virtual-Router
     ip is the IP Address
 */
-func (c PClient) testRouteFibLookupRST(vr, ip string) (url string, err error) {
+func (c *PClient) testRouteFibLookupRST(vr, ip string) (url string, err error) {
 	// To Do
 	// https://192.168.1.249/restapi/v9.1/Network/VirtualRouters
 	return "", nil
@@ -290,7 +296,7 @@ ShowInterface gets firewall interface information for a given interface. It uses
 This method gets:
     Intrfc is the Firewall Interface
 */
-func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
+func (c *PClient) ShowInterface(Intrfc string) ([]byte, error) {
 
 	switch c.Settings.Api {
 	// To do: testRouteFibLookupRST
@@ -304,6 +310,9 @@ func (c PClient) ShowInterface(Intrfc string) ([]byte, error) {
 			if err != nil {
 				return nil, err
 			}
+
+			// Filling PClient.Url
+			c.Url = url
 
 			b, err := c.Dial(url, "GET")
 			if err != nil {
@@ -324,7 +333,7 @@ GetZoneFromInt uses ShowInterface to get interface info, then parses the XML or 
 This method gets:
     Intrfc is the Firewall Interface
 */
-func (c PClient) GetZoneFromInt(Intrfc string) (string, error) {
+func (c *PClient) GetZoneFromInt(Intrfc string) (string, error) {
 
 	// Get Source Zone Info info
 	result, err := c.ShowInterface(Intrfc)
@@ -362,7 +371,7 @@ This method gets:
     fip is Firewall IP Address
     Intrfc is the Firewall Interface
 */
-func (c PClient) showInterfaceXML(Intrfc string) (url string, err error) {
+func (c *PClient) showInterfaceXML(Intrfc string) (url string, err error) {
 
 	url = "https://" + c.Fip + "/api/?type=op&cmd=<show><interface>" + Intrfc
 	url = url + "</interface></show>"
@@ -392,7 +401,7 @@ This method gets:
     fip is Firewall IP Address
     Intrfc is the Firewall Interface
 */
-func (c PClient) showInterfaceRST(Intrfc string) (url string, err error) {
+func (c *PClient) showInterfaceRST(Intrfc string) (url string, err error) {
 	// To Do
 	//
 	return "", nil
@@ -412,7 +421,7 @@ This method gets cfg that is an 7-cell array in which:
     cfg[4] is Destination IP
     cfg[5] is Destination Port
     cfg[6] is Application*/
-func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
+func (c *PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 
 	switch c.Settings.Api {
 	// To do: testRouteFibLookupRST
@@ -426,6 +435,9 @@ func (c PClient) TestSecurityPolicyMatch(cfg [7]string) ([]byte, error) {
 			if err != nil {
 				return nil, err
 			}
+
+			// Filling PClient.Url
+			c.Url = url
 
 			b, err := c.Dial(url, "GET")
 			if err != nil {
@@ -452,7 +464,7 @@ This method gets cfg that is an 7-cell array in which:
     cfg[5] is Destination Port
     cfg[6] is Application
 */
-func (c PClient) GetPolicyMatch(cfg [7]string) (string, error) {
+func (c *PClient) GetPolicyMatch(cfg [7]string) (string, error) {
 
 	// Get Test Security Policy Match result
 	result, err := c.TestSecurityPolicyMatch(cfg)
@@ -497,7 +509,7 @@ This method gets cfg that is an 7-cell array in which:
     cfg[5] is Destination Port
     cfg[6] is Application
 */
-func (c PClient) testSecurityPolicyMatchXML(cfg [7]string) (url string, err error) {
+func (c *PClient) testSecurityPolicyMatchXML(cfg [7]string) (url string, err error) {
 
 	if cfg[0] == "" {
 		return "", errors.New("Fist parameter should be protocol number!\n")
@@ -563,13 +575,13 @@ This method gets cfg that is an 7-cell array in which:
     cfg[5] is Destination Port
     cfg[6] is Application
 */
-func (c PClient) testSecurityPolicyMatchRST(fip string, cfg [7]string, key string) ([]byte, error) {
+func (c *PClient) testSecurityPolicyMatchRST(fip string, cfg [7]string, key string) ([]byte, error) {
 	// To Do
 	//
 	return nil, nil
 }
 
-func (c PClient) FindObjectAddress() ([]byte, error) {
+func (c *PClient) FindObjectAddress() ([]byte, error) {
 	// To Do
 	//
 	return nil, nil

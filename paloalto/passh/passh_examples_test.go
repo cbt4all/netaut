@@ -5,7 +5,6 @@ import "fmt"
 func ExampleTestRouteFibLookupCmd() {
 	cmd := TestRouteFibLookupCmd("default", "192.168.1.1")
 	fmt.Println(cmd)
-
 	// Output:
 	// test routing fib-lookup virtual-router default ip 192.168.1.1
 }
@@ -14,7 +13,6 @@ func ExampleShowInterfaceCmd() {
 
 	cmd := ShowInterfaceCmd("ae1.1345")
 	fmt.Println(cmd)
-
 	// Output:
 	// show interface ae1.1345
 }
