@@ -164,3 +164,21 @@ type PolicyMatchResult struct {
 		} `xml:"rules"`
 	} `xml:"result"`
 }
+
+// ObjectsAddresses is a slice of Object Addresses that represents Name, IP Address and Description of a Network Object.
+// Example, if 'oa' be a variable of ObjectsAddresses, oa.Result.Entry[0].IPNetmask brings the IP address of the first object
+type ObjectsAddresses struct {
+	Status string `json:"@status"`
+	Code   string `json:"@code"`
+	Result struct {
+		TotalCount string `json:"@total-count"`
+		Count      string `json:"@count"`
+		Entry      []struct {
+			Name        string `json:"@name"`
+			Location    string `json:"@location"`
+			Vsys        string `json:"@vsys"`
+			IPNetmask   string `json:"ip-netmask"`
+			Description string `json:"description,omitempty"`
+		} `json:"entry"`
+	} `json:"result"`
+}

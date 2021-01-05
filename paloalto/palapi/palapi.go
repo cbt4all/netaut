@@ -581,10 +581,55 @@ func (c *PClient) testSecurityPolicyMatchRST(fip string, cfg [7]string, key stri
 	return nil, nil
 }
 
-func (c *PClient) FindObjectAddress() ([]byte, error) {
+/*
+findObjAddRST generates an URL to be used to get firewall Object Addresses. The URL is generated is REST XML based URL
+*/
+func (c *PClient) findObjAddXML(fip, objname, vsys string) (url string, err error) {
 	// To Do
-	//
-	return nil, nil
+	return "", nil
+}
+
+/*
+findObjAddRST generates an URL to be used to get firewall Object Addresses. The URL is generated is REST API based URL.
+
+This method gets:
+    fip is Firewall IP Address
+    vsys is the Virtual System - default is vsys1
+*/
+func (c *PClient) findObjAddRST(fip, vsys, objname string) (url string, err error) {
+
+	url = "https://" + fip + "/restapi/v9.1/Objects/Addresses?location=vsys&vsys="
+	if objname == "" {
+		url = url + "vsys1"
+	}
+	if objname != "" {
+		url = url + "&name=" + objname
+	}
+	return url, nil
+}
+
+/*
+
+ */
+func (c *PClient) FindObjAdd(fip, objname, vsys string) (paloalto.ObjectsAddresses.Result.Entry, error) {
+
+	// Parse the output
+	switch c.Settings.Api {
+	// To do:
+	case 0: // REST API
+		{
+			// To do:
+		}
+	case 1: // XML API
+		{
+			// To do:
+		}
+	default:
+		{
+			// To do:
+		}
+	}
+
 }
 
 // REST Network

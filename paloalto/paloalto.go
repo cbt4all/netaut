@@ -1,6 +1,7 @@
 package paloalto
 
 import (
+	"encoding/json"
 	"encoding/xml"
 )
 
@@ -35,4 +36,15 @@ func ParseXMLPolicyMatch(s string) (PolicyMatchResult, error) {
 	err := xml.Unmarshal(b, &plcm)
 
 	return plcm, err
+}
+
+// ParseJsonObjAdd gets s as JSON format, parses it and return an ObjectsAddresses
+func ParseJsonObjAdd(s string) (ObjectsAddresses, error) {
+	// s is the string format of an Json
+	var oa ObjectsAddresses
+
+	b := []byte(s)
+	err := json.Unmarshal(b, &oa)
+
+	return oa, err
 }
