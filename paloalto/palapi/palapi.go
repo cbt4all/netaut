@@ -609,27 +609,74 @@ func (c *PClient) findObjAddRST(fip, vsys, objname string) (url string, err erro
 }
 
 /*
+FindObjAdd gets firewall Object Addresses and provide a slice of ObjectsAddresses.Result.Entry of the package 'paloalto'. It uses different protocols (REST/XML API) and authentication methods (Key/Token or Basic User/Pass) based on what is set for PClient settings.
+Output will be in XML/Jason format, depends on the protocol is used.
 
- */
-func (c *PClient) FindObjAdd(fip, objname, vsys string) (paloalto.ObjectsAddresses.Result.Entry, error) {
+This method gets:
+    fip is Firewall IP Address
+    vsys is the Virtual System - default is vsys1
+*/
+func (c *PClient) FindObjAdd(fip, objname, vsys string) ([]struct {
+	Name        string
+	Location    string
+	Vsys        string
+	IPNetmask   string
+	Description string
+}, error) {
 
 	// Parse the output
 	switch c.Settings.Api {
 	// To do:
 	case 0: // REST API
 		{
-			// To do:
+			url, err := c.findObjAddRST(fip, objname, vsys)
+			if err != nil {
+				return nil, err
+			}
+
+			// Filling PClient.Url
+			c.Url = url
+
+			b, err := c.Dial(url, "GET")
+			if err != nil {
+				return nil, err
+			}
+
+			str := string(b)
+
+			oa, err := ParseJsonObjAdd(str)
+			if err != nil {
+				return nil, err
+			}
+
+			entry := make([]struct {
+				Name        string
+				Location    string
+				Vsys        string
+				IPNetmask   string
+				Description string
+			}, len(oa.Result.Entry))
+
+			for idx, item := range oa.Result.Entry {
+				entry[idx].Name = item.Name
+				entry[idx].Location = item.Location
+				entry[idx].Vsys = item.Vsys
+				entry[idx].IPNetmask = item.IPNetmask
+				entry[idx].Description = item.Description
+			}
+
+			return entry, nil
 		}
 	case 1: // XML API
 		{
 			// To do:
+			return nil, errors.New("Wrong type of API is used.")
 		}
 	default:
 		{
-			// To do:
+			return nil, errors.New("Wrong type of API is used.")
 		}
 	}
-
 }
 
 // REST Network
