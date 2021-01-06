@@ -644,7 +644,7 @@ func (c *PClient) FindObjAdd(fip, objname, vsys string) ([]struct {
 
 			str := string(b)
 
-			oa, err := ParseJsonObjAdd(str)
+			oa, err := paloalto.ParseJsonObjAdd(str)
 			if err != nil {
 				return nil, err
 			}
