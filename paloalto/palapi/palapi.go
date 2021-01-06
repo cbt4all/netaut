@@ -599,12 +599,15 @@ This method gets:
 func (c *PClient) findObjAddRST(fip, vsys, objname string) (url string, err error) {
 
 	url = "https://" + fip + "/restapi/v9.1/Objects/Addresses?location=vsys&vsys="
-	if objname == "" {
+	if vsys == "" {
 		url = url + "vsys1"
+	} else {
+		url = url + vsys
 	}
 	if objname != "" {
 		url = url + "&name=" + objname
 	}
+
 	return url, nil
 }
 
@@ -616,7 +619,7 @@ This method gets:
     fip is Firewall IP Address
     vsys is the Virtual System - default is vsys1
 */
-func (c *PClient) FindObjAdd(fip, objname, vsys string) ([]struct {
+func (c *PClient) FindObjAdd(fip, vsys, objname string) ([]struct {
 	Name        string
 	Location    string
 	Vsys        string
