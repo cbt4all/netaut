@@ -10,7 +10,7 @@ import (
 func ExamplePClient_GetInterfaceFromFIB() {
 
 	// Create a new ClientSettings using Username/Password
-	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
+	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -70,7 +70,7 @@ func ExamplePClient_TestRouteFibLookup() {
 func ExamplePClient_GetZoneFromInt() {
 
 	// Create a new ClientSettings using Username/Password
-	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
+	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -95,7 +95,7 @@ func ExamplePClient_GetZoneFromInt() {
 func ExamplePClient_ShowInterface() {
 
 	// Create a new ClientSettings using Username/Password
-	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
+	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -118,7 +118,7 @@ func ExamplePClient_ShowInterface() {
 func ExamplePClient_GetPolicyMatch() {
 
 	// Create a new ClientSettings using Username/Password
-	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
+	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -152,7 +152,7 @@ func ExamplePClient_GetPolicyMatch() {
 func ExamplePClient_TestSecurityPolicyMatch() {
 
 	// Create a new ClientSettings using Username/Password
-	cs, err := NewClientSettings(1, 1, "", "admin", "admin")
+	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -207,7 +207,7 @@ func ExamplePClient_TestSecurityPolicyMatch() {
 func ExamplePClient_FindObjAdd() {
 
 	// Create a new ClientSettings using Username/Password
-	cs, err := palapi.NewClientSettings(0, 1, "", "admin", "Admin!@#")
+	cs, err := palapi.NewClientSettings(0, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -48,3 +48,14 @@ func ParseJsonObjAdd(s string) (ObjectsAddresses, error) {
 
 	return oa, err
 }
+
+// ParseJsonObjAddGrp gets s as JSON format, parses it and return an ObjectGroupAddresses
+func ParseJsonObjAddGrp(s string) (ObjectGroupAddresses, error) {
+	// s is the string format of an Json
+	var oga ObjectGroupAddresses
+
+	b := []byte(s)
+	err := json.Unmarshal(b, &oga)
+
+	return oga, err
+}

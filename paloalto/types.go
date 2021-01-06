@@ -182,3 +182,25 @@ type ObjectsAddresses struct {
 		} `json:"entry"`
 	} `json:"result"`
 }
+
+// ObjectGroupAddresses is a slice of Object Address Groups that includes one or more Object Addresses Name.
+// Example, if 'oga' be a variable of ObjectGroupAddresses, oga.Result.Entry[0].Static.Member[0] brings Object Addresses Name of the first object
+type ObjectGroupAddresses struct {
+	Status string `json:"@status"`
+	Code   string `json:"@code"`
+	Result struct {
+		TotalCount string `json:"@total-count"`
+		Count      string `json:"@count"`
+		Entry      []struct {
+			Name     string `json:"@name"`
+			Location string `json:"@location"`
+			Vsys     string `json:"@vsys"`
+			Static   struct {
+				Member []string `json:"member"`
+			} `json:"static,omitempty"`
+			Dynamic struct {
+				Filter string `json:"filter"`
+			} `json:"dynamic,omitempty"`
+		} `json:"entry"`
+	} `json:"result"`
+}

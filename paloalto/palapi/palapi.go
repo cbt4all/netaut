@@ -582,7 +582,7 @@ func (c *PClient) testSecurityPolicyMatchRST(fip string, cfg [7]string, key stri
 }
 
 /*
-findObjAddRST generates an URL to be used to get firewall Object Addresses. The URL is generated is REST XML based URL
+findObjAddRST generates an URL to be used to get firewall Object Addresses. The URL is generated is XML based URL
 */
 func (c *PClient) findObjAddXML(fip, objname, vsys string) (url string, err error) {
 	// To Do
@@ -594,7 +594,8 @@ findObjAddRST generates an URL to be used to get firewall Object Addresses. The 
 
 This method gets:
     fip is Firewall IP Address
-    vsys is the Virtual System - default is vsys1
+	vsys is the Virtual System - default is vsys1
+	objname is the Object Name
 */
 func (c *PClient) findObjAddRST(fip, vsys, objname string) (url string, err error) {
 
@@ -617,7 +618,8 @@ Output will be in XML/Jason format, depends on the protocol is used.
 
 This method gets:
     fip is Firewall IP Address
-    vsys is the Virtual System - default is vsys1
+	vsys is the Virtual System - default is vsys1
+	objname is the Object Name
 */
 func (c *PClient) FindObjAdd(fip, vsys, objname string) ([]struct {
 	Name        string
@@ -661,6 +663,109 @@ func (c *PClient) FindObjAdd(fip, vsys, objname string) ([]struct {
 			}, len(oa.Result.Entry))
 
 			for idx, item := range oa.Result.Entry {
+				entry[idx].Name = item.Name
+				entry[idx].Location = item.Location
+				entry[idx].Vsys = item.Vsys
+				entry[idx].IPNetmask = item.IPNetmask
+				entry[idx].Description = item.Description
+			}
+
+			return entry, nil
+		}
+	case 1: // XML API
+		{
+			// To do:
+			return nil, errors.New("Wrong type of API is used.")
+		}
+	default:
+		{
+			return nil, errors.New("Wrong type of API is used.")
+		}
+	}
+}
+
+/*
+findObjAddGrpXML generates an URL to be used to get firewall Object Address Groups. The URL is generated is XML based URL
+*/
+func (c *PClient) findObjAddGrpXML(fip, objname, vsys string) (url string, err error) {
+	// To Do
+	return "", nil
+}
+
+/*
+findObjAddGrpRST generates an URL to be used to get firewall Object Address Groups. The URL is generated is REST based URL
+
+This method gets:
+    fip is Firewall IP Address
+	vsys is the Virtual System - default is vsys1
+	objname is the Object Name
+*/
+func (c *PClient) findObjAddGrpRST(fip, vsys, objname string) (url string, err error) {
+
+	url = "https://" + fip + "/restapi/v9.1/Objects/AddressGroups?location=vsys&vsys="
+	if vsys == "" {
+		url = url + "vsys1"
+	} else {
+		url = url + vsys
+	}
+	if objname != "" {
+		url = url + "&name=" + objname
+	}
+
+	return url, nil
+}
+
+/*
+FindObjAddGrp gets firewall Object Address Groups and provide a slice of ObjectGroupAddresses.Result.Entry of the package 'paloalto'. It uses different protocols (REST/XML API) and authentication methods (Key/Token or Basic User/Pass) based on what is set for PClient settings.
+Output will be in XML/Jason format, depends on the protocol is used.
+
+This method gets:
+    fip is Firewall IP Address
+	vsys is the Virtual System - default is vsys1
+	objname is the Object Name
+*/
+func (c *PClient) FindObjAddGrp(fip, vsys, objname string) ([]struct {
+	Name     string
+	Location string
+	Vsys     string
+	Static   struct{ Member []string }
+	Dynamic  struct{ Filter string }
+}, error) {
+
+	// Parse the output
+	switch c.Settings.Api {
+	// To do:
+	case 0: // REST API
+		{
+			url, err := c.findObjAddGrpRST(fip, objname, vsys)
+			if err != nil {
+				return nil, err
+			}
+
+			// Filling PClient.Url
+			c.Url = url
+
+			b, err := c.Dial(url, "GET")
+			if err != nil {
+				return nil, err
+			}
+
+			str := string(b)
+
+			oga, err := paloalto.ParseJsonObjAddGrp(str)
+			if err != nil {
+				return nil, err
+			}
+
+			entry := make([]struct {
+				Name     string
+				Location string
+				Vsys     string
+				Static   struct{ Member []string }
+				Dynamic  struct{ Filter string }
+			}, len(oga.Result.Entry))
+
+			for idx, item := range oga.Result.Entry {
 				entry[idx].Name = item.Name
 				entry[idx].Location = item.Location
 				entry[idx].Vsys = item.Vsys
