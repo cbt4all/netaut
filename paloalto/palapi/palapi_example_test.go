@@ -3,6 +3,8 @@ package palapi
 import (
 	"fmt"
 	"log"
+
+	"github.com/cbt4all/netaut/paloalto/palapi"
 )
 
 func ExamplePClient_GetInterfaceFromFIB() {
@@ -200,4 +202,46 @@ func ExamplePClient_TestSecurityPolicyMatch() {
 	//		</rules>
 	//	</result>
 	//</response>
+}
+
+func ExamplePClient_FindObjAdd() {
+
+	// Create a new ClientSettings using Username/Password
+	cs, err := palapi.NewClientSettings(0, 1, "", "admin", "Admin!@#")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create a new Palo Alto Client
+	c, err := palapi.NewPClient(cs, "192.168.1.251", "", true)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get all firewall Objects Addresses
+	oa1, err := c.FindObjAdd(c.Fip, "", "")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Check if the 10.0.1.3/32 exist in the found Objects Addresses.
+	// Use this method when Objects Addresses Name is not known
+	for idx, item := range oa1 {
+		if item.IPNetmask == "10.0.1.3/32" {
+			fmt.Println(idx, item.IPNetmask, item.Name)
+		}
+	}
+
+	// Find a firewall Objects Addresses with the name HOST_10.0.1.3 as an Objects Addresses in the Virtual System vsys2
+	// Use this method when Objects Addresses Name known
+	oa2, err := c.FindObjAdd(c.Fip, "HOST_10.0.1.3", "vsys2")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(oa2[0].IPNetmask, oa2[0].Name)
+
+	// Output:
+	// 7 10.0.1.3/32 HOST_10.0.1.3
+	// 10.0.1.3/32 HOST_10.0.1.3
 }
