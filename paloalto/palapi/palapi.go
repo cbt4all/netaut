@@ -769,8 +769,8 @@ func (c *PClient) FindObjAddGrp(fip, vsys, objname string) ([]struct {
 				entry[idx].Name = item.Name
 				entry[idx].Location = item.Location
 				entry[idx].Vsys = item.Vsys
-				entry[idx].IPNetmask = item.IPNetmask
-				entry[idx].Description = item.Description
+				entry[idx].Static.Member = item.Static.Member
+				entry[idx].Dynamic.Filter = item.Dynamic.Filter
 			}
 
 			return entry, nil

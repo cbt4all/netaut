@@ -9,7 +9,7 @@ import (
 
 func ExamplePClient_GetInterfaceFromFIB() {
 
-	// Create a new ClientSettings using Username/Password
+	// Create a new ClientSettings using XML API with Username/Password as authentication method
 	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
@@ -38,7 +38,7 @@ func ExamplePClient_TestRouteFibLookup() {
 	// Use this link to find how to get the Key: https://docs.paloaltonetworks.com/content/techdocs/en_US/pan-os/9-0/pan-os-panorama-api.html
 	key := "LUFRPT1GdWNLZzdXM2svZ1JZTVNreXdGRU1xRktrNnc9T3RxUGZDVkQrNDNVdXV1K3F3L2gvTWZZNFdqdXNIQjlkUDBTSWtWazl6anhLQmVZT3lzaUdCVWEvRGs1UTQydA=="
 
-	// Create a new ClientSettings Using Token/Key
+	// Create a new ClientSettings using XML API with Token/Key as authentication method
 	cs, err := NewClientSettings(1, 0, key, "", "")
 	if err != nil {
 		log.Fatal(err)
@@ -69,7 +69,7 @@ func ExamplePClient_TestRouteFibLookup() {
 
 func ExamplePClient_GetZoneFromInt() {
 
-	// Create a new ClientSettings using Username/Password
+	// Create a new ClientSettings using XML API with Username/Password as authentication method
 	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
@@ -94,7 +94,7 @@ func ExamplePClient_GetZoneFromInt() {
 
 func ExamplePClient_ShowInterface() {
 
-	// Create a new ClientSettings using Username/Password
+	// Create a new ClientSettings using XML API with Username/Password as authentication method
 	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
@@ -117,7 +117,7 @@ func ExamplePClient_ShowInterface() {
 
 func ExamplePClient_GetPolicyMatch() {
 
-	// Create a new ClientSettings using Username/Password
+	// Create a new ClientSettings using XML API with Username/Password as authentication method
 	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
@@ -151,7 +151,7 @@ func ExamplePClient_GetPolicyMatch() {
 
 func ExamplePClient_TestSecurityPolicyMatch() {
 
-	// Create a new ClientSettings using Username/Password
+	// Create a new ClientSettings using XML API with Username/Password as authentication method
 	cs, err := NewClientSettings(1, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
@@ -206,7 +206,7 @@ func ExamplePClient_TestSecurityPolicyMatch() {
 
 func ExamplePClient_FindObjAdd() {
 
-	// Create a new ClientSettings using Username/Password
+	// Create a new ClientSettings using REST API with Username/Password as authentication method
 	cs, err := palapi.NewClientSettings(0, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
@@ -244,4 +244,48 @@ func ExamplePClient_FindObjAdd() {
 	// Output:
 	// 7 10.0.1.3/32 HOST_10.0.1.3
 	// 10.0.1.3/32 HOST_10.0.1.3
+}
+
+func ExamplePClient_FindObjAddGrp() {
+
+	// Create a new ClientSettings using REST API with Username/Password as authentication method
+	cs, err := NewClientSettings(0, 1, "", "admin", "Admin!@#")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create a new Palo Alto Client
+	c, err := NewPClient(cs, "192.168.1.251", "", true)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get all firewall Objects Addresses
+	oga1, err := c.FindObjAddGrp(c.Fip, "", "")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Check if the HOST_10.0.4.3 exists as a member of any Object Address Group.
+	// Use this method when Object Address Group Name is not known
+	for idx1, oa := range oga1 {
+		for idx2, item := range oa.Static.Member {
+			if item == "HOST_10.0.4.3" {
+				fmt.Println(idx1, idx2, oa.Name)
+			}
+		}
+	}
+
+	// Find a firewall Object Address Group with the name tempgroup2 in the Virtual System vsys1
+	// Use this method when Objects Addresses Name known
+	oga2, err := c.FindObjAddGrp(c.Fip, "tempgroup2", "vsys1")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(oga2[0].Static.Member)
+
+	// Output:
+	// 	1 0 tempgroup2
+	// [HOST_10.0.4.3 HOST_10.0.10.3]
 }
