@@ -204,3 +204,76 @@ type ObjectGroupAddresses struct {
 		} `json:"entry"`
 	} `json:"result"`
 }
+
+// ObjGrpAddEntry is Object Group Addresses Entry
+type ObjGrpAddEntry struct {
+	Name     string
+	Location string
+	Vsys     string
+	Static   struct{ Member []string }
+	Dynamic  struct{ Filter string }
+}
+
+// SecurityRules is
+type SecurityRules struct {
+	Status string `json:"@status"`
+	Code   string `json:"@code"`
+	Result struct {
+		TotalCount string `json:"@total-count"`
+		Count      string `json:"@count"`
+		Entry      []struct {
+			Name     string `json:"@name"`
+			UUID     string `json:"@uuid"`
+			Location string `json:"@location"`
+			Vsys     string `json:"@vsys"`
+			To       struct {
+				Member []string `json:"member"`
+			} `json:"to"`
+			From struct {
+				Member []string `json:"member"`
+			} `json:"from"`
+			Source struct {
+				Member []string `json:"member"`
+			} `json:"source"`
+			Destination struct {
+				Member []string `json:"member"`
+			} `json:"destination"`
+			SourceUser struct {
+				Member []string `json:"member"`
+			} `json:"source-user"`
+			Category struct {
+				Member []string `json:"member"`
+			} `json:"category"`
+			Application struct {
+				Member []string `json:"member"`
+			} `json:"application"`
+			Service struct {
+				Member []string `json:"member"`
+			} `json:"service"`
+			HipProfiles struct {
+				Member []string `json:"member"`
+			} `json:"hip-profiles"`
+			Action   string `json:"action"`
+			LogStart string `json:"log-start"`
+		} `json:"entry"`
+	} `json:"result"`
+}
+
+// SecRulesEntry Security Rules Entry
+type SecRulesEntry struct {
+	Name        string
+	UUID        string
+	Location    string
+	Vsys        string
+	To          []string
+	From        []string
+	Source      []string
+	Destination []string
+	SourceUser  []string
+	Category    []string
+	Application []string
+	Service     []string
+	HipProfiles []string
+	Action      string
+	LogStart    string
+}

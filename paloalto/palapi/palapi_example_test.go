@@ -249,7 +249,7 @@ func ExamplePClient_FindObjAdd() {
 func ExamplePClient_FindObjAddGrp() {
 
 	// Create a new ClientSettings using REST API with Username/Password as authentication method
-	cs, err := NewClientSettings(0, 1, "", "admin", "Admin!@#")
+	cs, err := NewClientSettings(0, 1, "", "admin", "password")
 	if err != nil {
 		log.Fatal(err)
 	}

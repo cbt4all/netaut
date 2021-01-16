@@ -724,13 +724,7 @@ This method gets:
 	vsys is the Virtual System - default is vsys1
 	objname is the Object Name
 */
-func (c *PClient) FindObjAddGrp(fip, vsys, objname string) ([]struct {
-	Name     string
-	Location string
-	Vsys     string
-	Static   struct{ Member []string }
-	Dynamic  struct{ Filter string }
-}, error) {
+func (c *PClient) FindObjAddGrp(fip, vsys, objname string) ([]paloalto.ObjGrpAddEntry, error) {
 
 	// Parse the output
 	switch c.Settings.Api {
@@ -791,11 +785,6 @@ func (c *PClient) FindObjAddGrp(fip, vsys, objname string) ([]struct {
 // https://192.168.1.249/restapi/v9.1/Network/SDWANInterfaceProfiles
 // https://192.168.1.249/restapi/v9.1/Network/EthernetInterfaces?name=ethernet1/1
 // https://192.168.1.249/restapi/v9.1/Network/VirtualRouters?name=default
-
-// REST Get Object names
-// https://192.168.1.249/restapi/v9.1/Objects/Addresses?location=vsys&vsys=vsys1
-// https://192.168.1.249/restapi/v9.1/Objects/Addresses?location=vsys&vsys=vsys1&name=Eth1_1.1.1.254_24
-// https://192.168.1.249/restapi/v9.1/Objects/AddressGroups?location=vsys&vsys=vsys1&name=TestObject
 
 // REST Get Firewall Policy
 // https://192.168.1.249/restapi/v9.1/Policies/SecurityRules?location=vsys&vsys=vsys1&name=Z1-Z2
