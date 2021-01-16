@@ -183,6 +183,15 @@ type ObjectsAddresses struct {
 	} `json:"result"`
 }
 
+// ObjAddEntry is Objects Addresses Entry
+type ObjAddEntry struct {
+	Name        string
+	Location    string
+	Vsys        string
+	IPNetmask   string
+	Description string
+}
+
 // ObjectGroupAddresses is a slice of Object Address Groups that includes one or more Object Addresses Name.
 // Example, if 'oga' be a variable of ObjectGroupAddresses, oga.Result.Entry[0].Static.Member[0] brings Object Addresses Name of the first object
 type ObjectGroupAddresses struct {

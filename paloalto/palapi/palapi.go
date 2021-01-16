@@ -621,13 +621,7 @@ This method gets:
 	vsys is the Virtual System - default is vsys1
 	objname is the Object Name
 */
-func (c *PClient) FindObjAdd(fip, vsys, objname string) ([]struct {
-	Name        string
-	Location    string
-	Vsys        string
-	IPNetmask   string
-	Description string
-}, error) {
+func (c *PClient) FindObjAdd(fip, vsys, objname string) ([]paloalto.ObjAddEntry, error) {
 
 	// Parse the output
 	switch c.Settings.Api {
@@ -654,13 +648,7 @@ func (c *PClient) FindObjAdd(fip, vsys, objname string) ([]struct {
 				return nil, err
 			}
 
-			entry := make([]struct {
-				Name        string
-				Location    string
-				Vsys        string
-				IPNetmask   string
-				Description string
-			}, len(oa.Result.Entry))
+			entry := make([]paloalto.ObjAddEntry, len(oa.Result.Entry))
 
 			for idx, item := range oa.Result.Entry {
 				entry[idx].Name = item.Name
@@ -751,13 +739,7 @@ func (c *PClient) FindObjAddGrp(fip, vsys, objname string) ([]paloalto.ObjGrpAdd
 				return nil, err
 			}
 
-			entry := make([]struct {
-				Name     string
-				Location string
-				Vsys     string
-				Static   struct{ Member []string }
-				Dynamic  struct{ Filter string }
-			}, len(oga.Result.Entry))
+			entry := make([]paloalto.ObjGrpAddEntry, len(oga.Result.Entry))
 
 			for idx, item := range oga.Result.Entry {
 				entry[idx].Name = item.Name
