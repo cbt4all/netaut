@@ -289,3 +289,47 @@ func ExamplePClient_FindObjAddGrp() {
 	// 	1 0 tempgroup2
 	// [HOST_10.0.4.3 HOST_10.0.10.3]
 }
+
+func ExamplePClient_FindSecurityRules() {
+	// Create a new ClientSettings using REST API with Username/Password as authentication method
+	cs, err := NewClientSettings(0, 1, "", "admin", "password")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create a new Palo Alto Client
+	c, err := NewPClient(cs, "192.168.1.251", "", true)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get all firewall Security Rules
+	sr1, err := c.FindSecurityRules(c.Fip, "", "")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Check if the HOST_10.0.0.2 exists as a member of any Security Rule as Source.
+	// Use this method when Security Rule Name is not known
+	for idx1, sr := range sr1 {
+		for idx2, item := range sr.Source {
+			if item == "HOST_10.0.0.2" {
+				fmt.Println(idx1, idx2, sr.Name)
+			}
+		}
+	}
+
+	// Find a Security Rule with the name Policy1 in the Virtual System vsys1
+	// Use this method when Security Rule Name is known
+	sr2, err := c.FindSecurityRules(c.Fip, "Policy1", "vsys1")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(sr2[0])
+
+	// Output:
+	// 0 0 Policy1
+	// 1 0 Policy2
+	// {Policy1 c514948e-2a75-4814-9fe8-53cac7bd55ba vsys vsys1 [ZONE2] [ZONE1] [HOST_10.0.0.2] [HOST_10.0.10.4] [any] [any] [ssh] [any] [any] allow yes}
+}
