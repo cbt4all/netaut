@@ -861,8 +861,4 @@ func (c *PClient) FindSecurityRules(fip, vsys, objname string) ([]paloalto.SecRu
 // https://192.168.1.249/restapi/v9.1/Network/EthernetInterfaces?name=ethernet1/1
 // https://192.168.1.249/restapi/v9.1/Network/VirtualRouters?name=default
 
-// REST Get Firewall Policy
-// https://192.168.1.249/restapi/v9.1/Policies/SecurityRules?location=vsys&vsys=vsys1&name=Z1-Z2
-// https://192.168.1.249/restapi/v9.1/Policies/SecurityRules?location=vsys&vsys=vsys1&source=HOST_10.1.0.1
-
 // Push Frewall Policy
