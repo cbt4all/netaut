@@ -763,6 +763,99 @@ func (c *PClient) FindObjAddGrp(fip, vsys, objname string) ([]paloalto.ObjGrpAdd
 	}
 }
 
+/*
+findSecurityRulesRST generates an URL to be used to get Security Rules. The URL is generated is REST based URL
+
+This method gets:
+    fip is Firewall IP Address
+	vsys is the Virtual System - default is vsys1
+	objname is the Object Name
+*/
+func (c *PClient) findSecurityRulesRST(fip, vsys, objname string) (url string, err error) {
+
+	url = "https://" + fip + "/restapi/v9.1/Policies/SecurityRules?location=vsys&vsys="
+	if vsys == "" {
+		url = url + "vsys1"
+	} else {
+		url = url + vsys
+	}
+	if objname != "" {
+		url = url + "&name=" + objname
+	}
+
+	return url, nil
+}
+
+/*
+FindSecurityRules gets firewall Security Rule as Object name and provide a slice of SecRulesEntry of the package 'paloalto'. It uses different protocols (REST/XML API) and authentication methods (Key/Token or Basic User/Pass) based on what is set for PClient settings.
+Output will be in XML/Jason format, depends on the protocol is used.
+
+This method gets:
+    fip is Firewall IP Address
+	vsys is the Virtual System - default is vsys1
+	objname is the Object Name
+*/
+func (c *PClient) FindSecurityRules(fip, vsys, objname string) ([]paloalto.SecRulesEntry, error) {
+
+	// Parse the output
+	switch c.Settings.Api {
+	// To do:
+	case 0: // REST API
+		{
+			url, err := c.findSecurityRulesRST(fip, objname, vsys)
+			if err != nil {
+				return nil, err
+			}
+
+			// Filling PClient.Url
+			c.Url = url
+
+			b, err := c.Dial(url, "GET")
+			if err != nil {
+				return nil, err
+			}
+
+			str := string(b)
+
+			sr, err := paloalto.ParseJsonSecurityRules(str)
+			if err != nil {
+				return nil, err
+			}
+
+			entry := make([]paloalto.SecRulesEntry, len(sr.Result.Entry))
+
+			for idx, item := range sr.Result.Entry {
+				entry[idx].Name = item.Name
+				entry[idx].UUID = item.UUID
+				entry[idx].Location = item.Location
+				entry[idx].Vsys = item.Vsys
+				entry[idx].To = item.To.Member
+				entry[idx].From = item.From.Member
+				entry[idx].Source = item.Source.Member
+				entry[idx].Destination = item.Destination.Member
+				entry[idx].SourceUser = item.SourceUser.Member
+				entry[idx].Category = item.Category.Member
+				entry[idx].Application = item.Application.Member
+				entry[idx].Service = item.Service.Member
+				entry[idx].HipProfiles = item.HipProfiles.Member
+				entry[idx].Action = item.Action
+				entry[idx].LogStart = item.LogStart
+			}
+
+			return entry, nil
+		}
+	case 1: // XML API
+		{
+			// To do:
+			return nil, errors.New("Wrong type of API is used.")
+		}
+	default:
+		{
+			return nil, errors.New("Wrong type of API is used.")
+		}
+	}
+}
+
 // REST Network
 // https://192.168.1.249/restapi/v9.1/Network/SDWANInterfaceProfiles
 // https://192.168.1.249/restapi/v9.1/Network/EthernetInterfaces?name=ethernet1/1

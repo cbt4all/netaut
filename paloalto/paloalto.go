@@ -59,3 +59,14 @@ func ParseJsonObjAddGrp(s string) (ObjectGroupAddresses, error) {
 
 	return oga, err
 }
+
+// ParseJsonSecurityRules gets s as JSON format, parses it and return an SecurityRules
+func ParseJsonSecurityRules(s string) (SecurityRules, error) {
+	// s is the string format of an Json
+	var sr SecurityRules
+
+	b := []byte(s)
+	err := json.Unmarshal(b, &sr)
+
+	return sr, err
+}

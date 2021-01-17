@@ -165,7 +165,7 @@ type PolicyMatchResult struct {
 	} `xml:"result"`
 }
 
-// ObjectsAddresses is a slice of Object Addresses that represents Name, IP Address and Description of a Network Object.
+// ObjectsAddresses is the Object Addresses that represents Name, IP Address and Description of a Network Object.
 // Example, if 'oa' be a variable of ObjectsAddresses, oa.Result.Entry[0].IPNetmask brings the IP address of the first object
 type ObjectsAddresses struct {
 	Status string `json:"@status"`
@@ -192,7 +192,7 @@ type ObjAddEntry struct {
 	Description string
 }
 
-// ObjectGroupAddresses is a slice of Object Address Groups that includes one or more Object Addresses Name.
+// ObjectGroupAddresses is the Object Address Groups that includes one or more Object Addresses Name.
 // Example, if 'oga' be a variable of ObjectGroupAddresses, oga.Result.Entry[0].Static.Member[0] brings Object Addresses Name of the first object
 type ObjectGroupAddresses struct {
 	Status string `json:"@status"`
@@ -223,7 +223,7 @@ type ObjGrpAddEntry struct {
 	Dynamic  struct{ Filter string }
 }
 
-// SecurityRules is
+// SecurityRules represents Security Rules of the firewall that shows frewall Policies
 type SecurityRules struct {
 	Status string `json:"@status"`
 	Code   string `json:"@code"`
